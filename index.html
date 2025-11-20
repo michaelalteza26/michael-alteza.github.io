@@ -1,187 +1,350 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Michael Adrian Alteza – AI Automation Specialist</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-    body {
-        margin: 0;
-        font-family: "Poppins", sans-serif;
-        background: #020617;
-        color: white;
-        overflow-x: hidden;
-    }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Michael Alteza — AI Automation & Social Media</title>
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <style>
+    /* Basic reset */
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body,#app{height:100%}
+    body{font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;color:#cfe8ff;background:#07080a;overflow-y:auto}
 
-    /* --- 3D FLOATING BINARY BACKGROUND --- */
-    .binary-bg {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        pointer-events: none;
-        z-index: -5;
+    /* Background grid + glow */
+    .bg-grid{
+      position:fixed;inset:0;z-index:-2;pointer-events:none;background:
+        radial-gradient(ellipse at center, rgba(255,255,255,0.02) 0%, rgba(0,0,0,0) 50%),
+        linear-gradient(180deg, rgba(10,15,25,0.5), rgba(3,6,10,0.6));
+      overflow:hidden;
     }
-    .binary-layer {
-        position: absolute;
-        width: 200%;
-        height: 200%;
-        background: repeating-linear-gradient(
-            0deg,
-            rgba(0,255,70,0.15) 0px,
-            rgba(0,255,70,0.15) 2px,
-            transparent 2px,
-            transparent 4px
-        );
-        animation: float 25s linear infinite;
-    }
-    .binary-layer:nth-child(2) { animation-duration: 35s; opacity: 0.5; }
-    .binary-layer:nth-child(3) { animation-duration: 45s; opacity: 0.3; }
+    .neon-lines{position:absolute;inset:0;opacity:.35;filter:blur(12px);background-image:repeating-linear-gradient(0deg, rgba(20,110,255,0.06) 0 1px, transparent 1px 40px), repeating-linear-gradient(90deg, rgba(15,180,255,0.03) 0 1px, transparent 1px 40px)}
 
-    @keyframes float {
-        0% { transform: translate(-20%, -20%) rotate(0deg); }
-        100% { transform: translate(20%, 20%) rotate(360deg); }
-    }
+    .container{max-width:1100px;margin:40px auto;padding:30px}
+    header{display:flex;align-items:center;justify-content:space-between}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#0ea5ff33,#004bff11);display:flex;align-items:center;justify-content:center;border:1px solid rgba(14,165,255,.12)}
+    h1{font-size:22px;color:#e8f7ff}
+    p.lead{color:#95c7ff;margin-top:6px}
 
-    /* --- HEADER SECTION --- */
-    header {
-        text-align: center;
-        padding: 60px 20px;
-    }
-    h1 {
-        font-size: 40px;
-        margin-bottom: 10px;
-    }
-    .subtitle {
-        opacity: 0.8;
-        margin-bottom: 20px;
-    }
-    .contact a {
-        color: cyan;
-        text-decoration: none;
-    }
+    .hero{display:grid;grid-template-columns:1fr 480px;gap:30px;align-items:center;margin-top:36px}
+    .hero .left{padding:22px}
+    .eyebrow{display:inline-block;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,#04293a,#082e3f);color:#7fd0ff;font-weight:600;font-size:12px}
+    .title{font-size:38px;color:#dff6ff;margin-top:12px}
+    .subtitle{color:#9fcfff;margin-top:12px;font-size:16px;line-height:1.4}
+    .cta{display:flex;gap:12px;margin-top:18px}
+    .btn{padding:12px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);cursor:pointer;font-weight:700}
+    .btn-primary{background:linear-gradient(90deg,#02a9ff,#0066ff);color:#071026;box-shadow:0 6px 24px rgba(2,122,255,.12)}
+    .btn-ghost{background:transparent;color:#bfe7ff;border:1px solid rgba(191,231,255,0.06)}
 
-    /* --- 3D ROBOT --- */
-    .robot {
-        width: 180px;
-        margin: 30px auto;
-        perspective: 1000px;
-    }
-    .robot-head {
-        width: 100%;
-        transition: transform 0.1s linear; /* faster tracking */
-    }
+    /* right panel (3D) */
+    .canvas-wrap{width:100%;height:420px;background:linear-gradient(180deg, rgba(10,16,25,.4), rgba(5,8,12,.6));border-radius:14px;padding:10px;border:1px solid rgba(255,255,255,0.03);box-shadow:inset 0 0 40px rgba(0,120,255,0.02)}
 
-    /* --- MARQUEE --- */
+    /* sections */
+    section{margin-top:48px;padding:26px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border-radius:14px;border:1px solid rgba(255,255,255,0.02)}
+    .cards{display:flex;gap:18px}
+    .card{flex:1;padding:18px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(255,255,255,0.003));border:1px solid rgba(6,60,120,0.06)}
+    .card h3{color:#cfe8ff;margin-bottom:8px}
+    .muted{color:#91bfe0;font-size:14px}
+
+    /* projects gallery */
+    .projects{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .proj{background:#061219;border-radius:10px;padding:10px;min-height:140px;border:1px solid rgba(10,140,255,.06)}
+    .proj img{width:100%;height:120px;object-fit:cover;border-radius:8px}
+    .proj .label{margin-top:8px;color:#bfe7ff;font-weight:700}
+
+    /* contact */
+    .contact-grid{display:grid;grid-template-columns:1fr 360px;gap:18px}
+    form{display:flex;flex-direction:column;gap:10px}
+    input,textarea{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);padding:12px;border-radius:8px;color:#dceeff}
+    .small-muted{color:#91bfe0;font-size:13px}
+
+    footer{margin-top:30px;color:#6fa8d6;font-size:14px;text-align:center}
+
+    @media(max-width:980px){.hero{grid-template-columns:1fr}.contact-grid{grid-template-columns:1fr}.projects{grid-template-columns:repeat(2,1fr)}.canvas-wrap{height:320px}}
+    @media(max-width:560px){.projects{grid-template-columns:1fr}}
+  /* MOVING APPS */
     .marquee {
-        margin-top: 40px;
-        white-space: nowrap;
-        overflow: hidden;
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      margin: 50px 0;
     }
-    .marquee span {
-        display: inline-block;
-        padding-right: 50px;
-        animation: scroll 18s linear infinite;
-        font-size: 22px;
-        color: #38bdf8;
+    .marquee-inner {
+      display: inline-block;
+      animation: scroll 20s linear infinite;
+    }
+    .marquee img {
+      height: 50px;
+      margin: 0 25px;
     }
     @keyframes scroll {
-        from { transform: translateX(0); }
-        to { transform: translateX(-100%); }
+      from { transform: translateX(0); }
+      to { transform: translateX(-100%); }
     }
-
-    /* --- WORK SAMPLES --- */
-    .works {
-        text-align: center;
-        padding: 60px 20px;
-    }
-    .works img {
-        width: 280px;
-        margin: 15px;
-        border-radius: 12px;
-        box-shadow: 0 0 15px rgba(0,255,200,0.3);
-    }
-
-    /* --- CV BUTTON --- */
-    .cv-button {
-        margin-top: 20px;
-        display: inline-block;
-        padding: 14px 25px;
-        background: #14b8a6;
-        color: black;
-        font-weight: bold;
-        border-radius: 8px;
-        text-decoration: none;
-        transition: 0.3s;
-    }
-    .cv-button:hover {
-        background: #0d9488;
-    }
-</style>
+  </style>
 </head>
 <body>
+  <div class="bg-grid"><div class="neon-lines"></div></div>
+  <div class="container" id="app">
+    <header>
+      <div class="brand">
+        <div class="logo"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h16M12 4v16" stroke="#9be9ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div>
+          <h1>Michael Alteza</h1>
+          <p class="lead">AI Automation • Social Media • CRM</p>
+        </div>
+      </div>
+      <nav>
+        <a class="small-muted" href="#projects">Projects</a>
+      </nav>
+    </header>
 
-<!-- BINARY BACKGROUND -->
-<div class="binary-bg">
-    <div class="binary-layer"></div>
-    <div class="binary-layer"></div>
-    <div class="binary-layer"></div>
-</div>
+    <main>
+      <section class="hero">
+        <div class="left">
+          <span class="eyebrow">AI & Automation</span>
+          <div class="title">I build intelligent systems that automate and scale your business</div>
+          <p class="subtitle">I design automated workflows, AI-driven social media systems and CRM integrations that save time and increase performance. Book a call to see a demo.</p>
+          <div class="cta">
+            <button class="btn btn-primary" id="hireBtn">Hire Me</button>
+            <button class="btn btn-ghost" id="bookBtn">Book Appointment</button>
+          </div>
 
-<header>
-    <h1>Michael Adrian Alteza</h1>
-    <p class="subtitle">AI Automation Specialist • Social Media Manager • CRM & Workflow Expert</p>
+          <div style="margin-top:18px;color:#91bfe0;font-size:14px">Contact: 09910716848 • <a href="https://www.linkedin.com/in/michael-alteza-584b73363" target="_blank" style="color:#9fdcff">LinkedIn</a> • <a href="https://www.facebook.com/michael.alteza.2025" target="_blank" style="color:#9fdcff">Facebook</a></div>
+        </div>
 
-    <div class="contact">
-        <p>
-            <a href="https://www.facebook.com/michael.alteza.2025">Facebook</a> •
-            <a href="https://www.linkedin.com/in/michael-alteza-584b73363/">LinkedIn</a> •
-            WhatsApp: 09910716848 •
-            <a href="mailto:altezamichaeladrian@gmail.com">Email Me</a>
-        </p>
+        <div class="canvas-wrap">
+          <!-- 3D canvas -->
+          <canvas id="three-canvas" style="width:100%;height:100%;display:block;border-radius:10px"></canvas>
+        </div>
+      </section>
+
+      <section>
+        <h2 style="color:#dff6ff;margin-bottom:12px">What I Do</h2>
+        <div class="cards">
+          <div class="card">
+            <h3>AI Automation</h3>
+            <div class="muted">End-to-end workflow automation (n8n, Zapier), bot creation, data pipelines.</div>
+          </div>
+          <div class="card">
+            <h3>Social Media</h3>
+            <div class="muted">AI content generation, scheduling, engagement bots and analytics.</div>
+          </div>
+          <div class="card">
+            <h3>CRM & Integrations</h3>
+            <div class="muted">CRM setup, lead routing, customer journeys and analytics integration.</div>
+          </div>
+        </div>
+      </section>
+  <div class="marquee">
+    <div class="marquee-inner">
+      <img src="https://cdn-icons-png.flaticon.com/512/5968/5968866.png">
+      <img src="https://cdn-icons-png.flaticon.com/512/873/873107.png">
+      <img src="https://cdn-icons-png.flaticon.com/512/2504/2504923.png">
+      <img src="https://cdn-icons-png.flaticon.com/512/732/732200.png">
+      <img src="https://cdn-icons-png.flaticon.com/512/906/906361.png">
+      <img src="https://cdn-icons-png.flaticon.com/512/906/906361.png">
+        <img src="https://commons.wikimedia.org/wiki/File:Airtable_Logo.svg">
+        <img src="https://logo.svgcdn.com/simple-icons/n8n-dark.png">
+        <img src="https://logo.svgcdn.com/logos/zapier.png">
+        <img src="https://logo.svgcdn.com/logos/airtable.png">
+        <img src="https://logo.clearbit.com/gohighlevel.com">
     </div>
+  </div>
+      <section id="projects">
+        <h2 style="color:#dff6ff;margin-bottom:12px">Sample Work (Mockups)</h2>
+        <div class="projects">
+          <div class="proj">
+            <img src="asset/sample3.jfif" alt="workflow sample">
+            <div class="label">AI Resume Analyzer • Telegram Integration</div>
+          </div>
+          <div class="proj">
+            <img src="asset/sample2.jfif" alt="marketing hub">
+            <div class="label">Marketing Automation Hub • Multi-platform</div>
+          </div>
+          <div class="proj">
+            <img src="asset/sample1.jfif" alt="social manager">
+            <div class="label">AI Social Media Manager • Content + Engagement</div>
+          </div>
+        </div>
+      </section>
 
-    <!-- ROBOT -->
-    <div class="robot">
-        <img src="robot.png" class="robot-head" id="robotHead">
-    </div>
+      <section>
+        <h2 style="color:#dff6ff;margin-bottom:12px">Special Features</h2>
+        <div class="cards">
+          <div class="card">
+            <h3>Interactive 3D Robot</h3>
+            <div class="muted">Low-poly robot head that follows the cursor and reacts to hover.</div>
+          </div>
+          <div class="card">
+            <h3>Appointment Calendar</h3>
+            <div class="muted">Embed Calendly or Google Calendar to let clients book meetings.</div>
+          </div>
+          <div class="card">
+            <h3>Contact / Lead Capture</h3>
+            <div class="muted">Static site form integrated with Formspree for email forwarding.</div>
+          </div>
+        </div>
+      </section>
 
-    <!-- CV -->
-    <a class="cv-button" href="CV_Michael_Alteza.pdf" download>Download My CV</a>
+      <section>
+        <h2 style="color:#dff6ff;margin-bottom:12px">Contact & Bookings</h2>
+        <div class="contact-grid">
+          <div>
+            <p class="small-muted">Prefer a quick meeting? Click Book Appointment to open the scheduler.</p>
+            <div style="margin-top:12px;background:#041021;padding:14px;border-radius:10px;border:1px solid rgba(0,120,255,0.05)">
+              <strong style="color:#bfe7ff">Phone</strong>
+              <div class="muted">09910716848</div>
+              <strong style="margin-top:8px;display:block;color:#bfe7ff">WhatsApp</strong>
+              <div class="muted">+63 991 071 6848</div>
+              <strong style="margin-top:8px;display:block;color:#bfe7ff">Social</strong>
+              <div class="muted"><a href="https://www.linkedin.com/in/michael-alteza-584b73363" target="_blank" style="color:#9fdcff">LinkedIn</a> • <a href="https://www.facebook.com/michael.alteza.2025" target="_blank" style="color:#9fdcff">Facebook</a></div>
+            </div>
 
-    <!-- Marquee -->
-    <div class="marquee">
-        <span>
-            n8n • Zapier • Make.com • GoHighLevel • OpenAI • ElevenLabs • Meta API • Google API • 
-            TikTok API • YouTube Automation • AI Video Tools • CRM Systems • Auto-Publishing • Chatbots •
-        </span>
-        <span>
-            n8n • Zapier • Make.com • GoHighLevel • OpenAI • ElevenLabs • Meta API • Google API • 
-            TikTok API • YouTube Automation • AI Video Tools • CRM Systems • Auto-Publishing • Chatbots •
-        </span>
-    </div>
-</header>
+            <div style="margin-top:14px"><!-- Calendly embed placeholder -->
+              <div id="calendly-embed" style="min-height:360px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.03)"></div>
+            </div>
+          </div>
 
-<!-- WORK SAMPLES -->
-<section class="works">
-    <h2>My Automation Work Samples</h2>
+          <div>
+            <form id="contactForm" action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST">
+              <input type="text" name="name" placeholder="Your name" required>
+              <input type="email" name="email" placeholder="Your email" required>
+              <input type="text" name="subject" placeholder="Subject">
+              <textarea name="message" placeholder="Message" rows="6" required></textarea>
+              <button class="btn btn-primary" type="submit">Send Message</button>
+              <div class="small-muted" style="margin-top:8px">This form uses Formspree to forward messages to your email. Replace the action URL with your Formspree endpoint.</div>
+            </form>
+          </div>
+        </div>
+      </section>
 
-    <img src="sample1.jfif" alt="Sample Workflow 1">
-    <img src="sample2.jfif" alt="Sample Workflow 2">
-    <img src="sample3.jfif" alt="Sample Workflow 3">
-</section>
+      <footer>
+        © 2025 Michael Alteza — AI Automation & Social Media
+      </footer>
+    </main>
+  </div>
 
-<script>
-/* --- ROBOT HEAD FOLLOW CURSOR --- */
-document.addEventListener("mousemove", (e) => {
-    const head = document.getElementById("robotHead");
-    const x = (e.clientX / window.innerWidth - 0.5) * 60; 
-    const y = (e.clientY / window.innerHeight - 0.5) * 60;
-    head.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
-});
-</script>
+  <!-- three.js and simple robot script -->
+  <script src="https://unpkg.com/three@0.152.2/build/three.min.js"></script>
+  <script>
+    // Basic Three.js scene: low-poly robot head with eyes that follow cursor
+    const canvas = document.getElementById('three-canvas');
+    const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+    renderer.setPixelRatio(window.devicePixelRatio);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
+    camera.position.set(0,0,6);
+
+    // lighting
+    const amb = new THREE.AmbientLight(0xffffff,0.7);
+    scene.add(amb);
+    const dir = new THREE.DirectionalLight(0x7fe1ff,0.8);
+    dir.position.set(5,5,5);
+    scene.add(dir);
+
+    // head
+    const headGeo = new THREE.SphereGeometry(1.6, 32, 32);
+    const headMat = new THREE.MeshStandardMaterial({color:0x0b2340,metalness:0.2,roughness:0.3,envMapIntensity:0.7});
+    const head = new THREE.Mesh(headGeo, headMat);
+    head.scale.set(1,1.05,1);
+    scene.add(head);
+
+    // eye whites
+    const eyeGeo = new THREE.SphereGeometry(0.28,16,16);
+    const whiteMat = new THREE.MeshStandardMaterial({color:0xe9fbff,metalness:0.05,roughness:0.6});
+    const leftEye = new THREE.Mesh(eyeGeo, whiteMat);
+    const rightEye = leftEye.clone();
+    leftEye.position.set(-0.55,0.15,1.45);
+    rightEye.position.set(0.55,0.15,1.45);
+    scene.add(leftEye,rightEye);
+
+    // pupils (tiny dark spheres)
+    const pupilGeo = new THREE.SphereGeometry(0.12,16,16);
+    const pupilMat = new THREE.MeshStandardMaterial({color:0x05122a});
+    const lp = new THREE.Mesh(pupilGeo,pupilMat);
+    const rp = lp.clone();
+    lp.position.set(-0.55,0.15,1.6);
+    rp.position.set(0.55,0.15,1.6);
+    scene.add(lp,rp);
+
+    // subtle glow using sprite
+    function addGlow(x,y,z){
+      const sprMat = new THREE.SpriteMaterial({color:0x07a9ff,opacity:0.07});
+      const spr = new THREE.Sprite(sprMat);
+      spr.scale.set(6,3,1);
+      spr.position.set(x,y,z);
+      scene.add(spr);
+    }
+    addGlow(0,-0.8,0);
+
+    // resize handler
+    function resize(){
+      const w = canvas.clientWidth; const h = canvas.clientHeight;
+      renderer.setSize(w,h,false);
+      camera.aspect = w/h; camera.updateProjectionMatrix();
+    }
+    window.addEventListener('resize',resize); resize();
+
+    // mouse tracking: convert mouse to 3D target
+    const mouse = new THREE.Vector2(0,0);
+    let target = new THREE.Vector3();
+    function onPointerMove(e){
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = ( (e.clientX - rect.left) / rect.width ) * 2 - 1;
+      mouse.y = - ( (e.clientY - rect.top) / rect.height ) * 2 + 1;
+      // project into 3D at z=0 plane
+      const v = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+      v.unproject(camera);
+      const dir = v.sub(camera.position).normalize();
+      const distance = (0 - camera.position.z) / dir.z;
+      target = camera.position.clone().add(dir.multiplyScalar(distance));
+    }
+    window.addEventListener('pointermove', onPointerMove);
+
+    // subtle breathing animation
+    let t = 0;
+    function animate(){
+      t += 0.01;
+      head.rotation.y = Math.sin(t*0.6)*0.06;
+      head.rotation.x = Math.sin(t*0.4)*0.03;
+
+      // eyes look towards target with limited offset
+      function aim(eye, pupil, offsetX){
+        const worldPos = eye.localToWorld(new THREE.Vector3());
+        const dir = target.clone().sub(worldPos).normalize();
+        const look = worldPos.clone().add(dir.multiplyScalar(0.25));
+        // compute local coordinates for pupil
+        const local = eye.worldToLocal(look);
+        pupil.position.copy(eye.position).add(local.multiplyScalar(0.4));
+      }
+      aim(leftEye, lp, -1); aim(rightEye, rp, 1);
+
+      renderer.render(scene,camera);
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // buttons
+    document.getElementById('bookBtn').addEventListener('click', ()=>{
+      // replace with your Calendly url
+      const url = 'https://calendly.com/your-calendly-username/30min';
+      // open inline using widget (if desired) or new tab
+      window.open(url,'_blank');
+    });
+    document.getElementById('hireBtn').addEventListener('click', ()=>{document.getElementById('contactForm').scrollIntoView({behavior:'smooth'})});
+
+    // simple initial mouse target center
+    target.set(0,0,0);
+  </script>
+
+  <!-- Calendly inline script (commented: enable when you add your calendly URL) -->
+  <!--
+  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+  <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+  <script>Calendly.initInlineWidget({url:'https://calendly.com/your-calendly-username/30min',parentElement:document.getElementById('calendly-embed'),prefill:{},utm:{}})</script>
+  -->
 
 </body>
 </html>
