@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Michael Alteza — AI Automation & Social Media</title>
   <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+<script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+
   <style>
     /* Basic reset */
     *{box-sizing:border-box;margin:0;padding:0}
@@ -121,7 +124,11 @@
           <p class="subtitle">I design automated workflows, AI-driven social media systems and CRM integrations that save time and increase performance. Book a call to see a demo.</p>
           <div class="cta">
             <button class="btn btn-primary" id="hireBtn">Hire Me</button>
-            <button class="btn btn-ghost" id="bookBtn">Book Appointment</button>
+            <button class="btn btn-ghost" id="bookBtn"
+onclick="Calendly.initPopupWidget({url: 'https://calendly.com/michaelalteza26/30min'}); return false;">
+  Book Appointment
+</button>
+
           </div>
 
           <div style="margin-top:18px;color:#91bfe0;font-size:14px">Contact: 09910716848 • <a href="https://www.linkedin.com/in/michael-alteza-584b73363" target="_blank" style="color:#9fdcff">LinkedIn</a> • <a href="https://www.facebook.com/michael.alteza.2025" target="_blank" style="color:#9fdcff">Facebook</a></div>
@@ -355,6 +362,13 @@
     // simple initial mouse target center
     target.set(0,0,0);
   </script>
+
+<script>
+  Calendly.initInlineWidget({
+    url: 'https://calendly.com/michaelalteza26/30min',
+    parentElement: document.getElementById('calendly-embed')
+  });
+</script>
 
   <!-- Calendly inline script (commented: enable when you add your calendly URL) -->
   <!--
