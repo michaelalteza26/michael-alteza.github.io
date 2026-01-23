@@ -144,6 +144,46 @@
   font-size: 26px;
   cursor: pointer;
 }
+.proj {
+  cursor: pointer;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.proj img {
+  transition: transform .3s ease;
+}
+
+.proj:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 50px rgba(0,140,255,0.2);
+}
+
+.proj:hover img {
+  transform: scale(1.08);
+}
+.preview-card {
+  position: fixed;
+  background: #071426;
+  border: 1px solid rgba(0,140,255,0.2);
+  border-radius: 12px;
+  padding: 14px;
+  width: 300px;
+  pointer-events: none;
+  display: none;
+  z-index: 998;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+}
+
+.preview-card h4 {
+  color: #e6f5ff;
+  margin-bottom: 6px;
+}
+
+.preview-card p {
+  color: #9fcfff;
+  font-size: 13px;
+  line-height: 1.5;
+}
 
   </style>
 </head>
@@ -236,21 +276,31 @@ onclick="Calendly.initPopupWidget({url: 'https://calendly.com/michaelalteza26/30
       <section id="projects">
         <h2 style="color:#dff6ff;margin-bottom:12px">Sample Work (Mockups)</h2>
         <div class="projects">
-        <div class="proj" onclick="openProject('resume')">
+        <div class="proj"
+     onclick="openProject('resume')"
+     onmouseenter="previewProject('resume')"
+     onmouseleave="closePreview()">
   <img src="asset/sample3.jfif" alt="workflow sample">
-      <div class="label">AI Resume Analyzer • Telegram Integration</div>
+      <div class="label">AI Social Media Manager • Social Media Platform Integration</div>
       </div>
-
-          <div class="proj">
+          <div class="proj"
+     onclick="openProject('marketing')"
+     onmouseenter="previewProject('marketing')"
+     onmouseleave="closePreview()">
             <img src="asset/sample2.jfif" alt="marketing hub">
-            <div class="label">Marketing Automation Hub • Multi-platform</div>
+            <div class="label">ARCHTOCULUTURE Mulit-Platform Marketing Automation</div>
           </div>
-          <div class="proj">
+          <div class="proj"
+     onclick="openProject('social')"
+     onmouseenter="previewProject('social')"
+     onmouseleave="closePreview()">
             <img src="asset/sample1.jfif" alt="social manager">
             <div class="label">AI Social Media Manager • Content + Engagement</div>
           </div>
         </div>
       </section>
+      <div id="projectPreview" class="preview-card"></div>
+
       <!-- Project Modal -->
 <div id="projectModal" class="modal-overlay">
   <div class="modal-content">
@@ -456,23 +506,23 @@ onclick="Calendly.initPopupWidget({url: 'https://calendly.com/michaelalteza26/30
 <script>
 const projects = {
   resume: {
-    title: "AI Resume Analyzer • Telegram Integration",
-    description: "Automated resume screening system that evaluates CVs and delivers structured feedback via Telegram.",
+    title: "AI Social Media Manager • Social Media Platform Intefration",
+    description: "Automated Social Media Handling system that evaluates audience and delivers structured feedback via diffirent kind of paltform.",
     why: "Built to eliminate manual resume screening and provide instant candidate insights to recruiters.",
-    tools: "Make.com, OpenAI, Telegram Bot API, Google Drive",
+    tools: "N8N, OpenAI, Social MEdia Bot API, Google Drive",
     flow: [
-      "Resume uploaded via webhook",
+      "Content uploaded via webhook",
       "Text extracted and cleaned",
-      "AI evaluates skills, experience, and gaps",
-      "Structured score generated",
-      "Result delivered via Telegram"
+      "AI evaluates skills, Content type, and gaps",
+      "Structured Captions generated",
+      "Result delivered via Social Media Platform "
     ]
   },
   marketing: {
     title: "Marketing Automation Hub • Multi-Platform",
     description: "Central automation hub connecting lead sources, CRM, and follow-ups.",
     why: "To unify fragmented marketing systems into one reliable automation pipeline.",
-    tools: "Make.com, Airtable, Zapier, Meta Ads, Webhooks",
+    tools: "N8n, Airtable, Zapier, Meta Ads, Webhooks",
     flow: [
       "Lead captured from ad or form",
       "Data validated and deduplicated",
@@ -485,7 +535,7 @@ const projects = {
     title: "AI Social Media Manager • Content + Engagement",
     description: "AI-powered content creation and engagement automation.",
     why: "Built to scale social media presence without manual posting or replies.",
-    tools: "OpenAI, Make.com, Meta API, Scheduler",
+    tools: "OpenAI, N8N, Meta API, Scheduler",
     flow: [
       "Content brief received",
       "AI generates post variations",
@@ -517,6 +567,31 @@ function openProject(key) {
 function closeModal() {
   document.getElementById("projectModal").style.display = "none";
 }
+  function previewProject(key) {
+  const p = projects[key];
+  const preview = document.getElementById("projectPreview");
+
+  preview.innerHTML = `
+    <h4>${p.title}</h4>
+    <p>${p.description}</p>
+    <p><strong>Tools:</strong> ${p.tools}</p>
+  `;
+
+  preview.style.display = "block";
+}
+
+function closePreview() {
+  document.getElementById("projectPreview").style.display = "none";
+}
+
+document.addEventListener("mousemove", e => {
+  const preview = document.getElementById("projectPreview");
+  if (preview.style.display === "block") {
+    preview.style.left = e.clientX + 20 + "px";
+    preview.style.top = e.clientY + 20 + "px";
+  }
+});
+
 </script>
 
   <!-- Calendly inline script (commented: enable when you add your calendly URL) -->
