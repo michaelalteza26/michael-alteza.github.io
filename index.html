@@ -275,6 +275,7 @@ onclick="Calendly.initPopupWidget({url: 'https://calendly.com/michaelalteza26/30
     
       <section id="projects">
         <h2 style="color:#dff6ff;margin-bottom:12px">Sample Work (Mockups)</h2>
+        <h3 style="color:#9fdcff;margin:18px 0 10px">N8N Automation</h3>
         <div class="projects">
         <div class="proj"
      onclick="openProject('resume')"
@@ -298,6 +299,35 @@ onclick="Calendly.initPopupWidget({url: 'https://calendly.com/michaelalteza26/30
             <div class="label">AI Social Media Manager • Content + Engagement</div>
           </div>
         </div>
+
+        
+        <!--make.com-->
+          <h3 style="color:#9fdcff;margin:26px 0 10px">Make.com Automations</h3>
+         <div class="projects">
+        <div class="proj"
+     onclick="openProject('make1')"
+     onmouseenter="previewProject('make1')"
+     onmouseleave="closePreview()">
+  <img src="asset/make.1.jfif" alt="workflow sample">
+      <div class="label">Create and Update Leads Pipeline</div>
+      </div>
+          <div class="proj"
+     onclick="openProject('make2')"
+     onmouseenter="previewProject('make2')"
+     onmouseleave="closePreview()">
+            <img src="asset/make.1.jfif" alt="marketing hub">
+            <div class="label">Automate Order Intake, Validation, Erinchment and Error Notification</div>
+          </div>
+          <div class="proj"
+     onclick="openProject('make3')"
+     onmouseenter="previewProject('make3')"
+     onmouseleave="closePreview()">
+            <img src="asset/make.3.jfif" alt="social manager">
+            <div class="label">Automated Lead Intake, Validation & Routing SyStem</div>
+          </div>
+         </div>
+
+        
       </section>
       <div id="projectPreview" class="preview-card"></div>
 
@@ -543,9 +573,64 @@ const projects = {
       "Engagement monitored",
       "Analytics logged"
     ]
-  }
-};
+  },
+make1:{
+  title: "Automated Lead Intake & CRM Pipeline Management",
+  description: "Automatically receives incoming leads, validates data, detects duplicates, and creates or updates CRM pipeline records with full notifications and logging.",
+  why: "To ensure every inbound lead is processed correctly, prevent duplicates, maintain clean CRM data, and alert the team in real time when leads are created or updated.",
+  tools: "Make.com, Webhooks, Airtable, ClickUp, Slack, Gmail",
+  flow: [
+    "Receive lead data via webhook",
+    "Validate and clean incoming lead fields",
+    "Search CRM to check if lead already exists",
+    "Route logic to create a new lead or update an existing record",
+    "Update CRM pipeline stage",
+    "Create a task in ClickUp for follow-up",
+    "Notify team via Slack and email",
+    "Log errors and system status for auditing"
+  ]
+},
+make2:{
+  title: "Automated Order Processing with Validation & Error Handling",
+  description: "Processes incoming orders, validates data, detects existing records, updates order status, manages backorders, and alerts stakeholders on success or failure.",
+  why: "To eliminate manual order handling, reduce errors, ensure accurate fulfillment tracking, and immediately surface issues before they impact customers.",
+  tools: "Make.com, Webhooks, Airtable, Slack, Gmail",
+  flow: [
+    "Receive order payload via webhook",
+    "Sanitize and normalize order data",
+    "Validate required fields and business rules",
+    "Search existing records to prevent duplicate orders",
+    "Route orders based on availability and status",
+    "Update order or create backorder records",
+    "Notify operators and stakeholders via Slack",
+    "Send email confirmations or error alerts",
+    "Log final status for reporting and audits"
+  ]
+},
+make3:{
+  title:"Automated Lead Intake, Validation & Routing System",
+  description: "I built a Make.com automation that ingests inbound events via webhooks, sanitizes and validates data, routes execution based on event type, fully processes the primary business path, stubs secondary paths for future expansion, and escalates downstream failures with structured error alerts. The system is designed for reliability, maintainability, and incremental scaling.",
+  why: "Makes logs clearer Helps if you later add monitoring Shows lifecycle thinking",
+  tools: "Make.com, Webhooks, Airtable, Slack, Gmail, HTTP Request",
+  flow: [
+    "Receive new lead via webhook",
+    "Sanitize and normalize order data",
+    "Seperate via type of sources",
+    "Set Processing Status",
+    "Building a processed payload"
+    "Send the lead intake to downstream using http",
+    
+  
 
+
+  
+}
+
+
+
+  
+}:
+}
 function openProject(key) {
   const p = projects[key];
   document.getElementById("modalTitle").innerText = p.title;
