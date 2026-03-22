@@ -1,914 +1,545 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Michael Alteza — AI Automation & Social Media</title>
-  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
-  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
-  <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
-
-  <style>
-    :root {
-      --bg: #020a10;
-      --surface: rgba(255,255,255,0.02);
-      --border: rgba(0,200,255,0.08);
-      --border-bright: rgba(0,200,255,0.25);
-      --text: #c8e8f8;
-      --text-dim: #5a8fa8;
-      --text-bright: #e8f7ff;
-      --accent: #00c8ff;
-      --accent2: #0066ff;
-      --accent-ghl: #00ff88;
-      --accent-ghl-dim: rgba(0,255,136,0.08);
-      --font-mono: 'JetBrains Mono', monospace;
-      --font-display: 'Syne', sans-serif;
-    }
-
-    *{box-sizing:border-box;margin:0;padding:0}
-    html,body{height:100%;scroll-behavior:smooth}
-    body{
-      font-family: var(--font-mono);
-      color: var(--text);
-      overflow-y:auto;
-      background: var(--bg);
-      background-image: url('asset/background.jpg');
-      background-size:cover;
-      background-repeat:no-repeat;
-      background-attachment:fixed;
-      background-position:center;
-    }
-
-    /* ── SCANLINE OVERLAY ── */
-    body::before {
-      content:'';
-      position:fixed;inset:0;z-index:0;pointer-events:none;
-      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
-      animation: scanlines 8s linear infinite;
-    }
-    @keyframes scanlines { from{background-position:0 0} to{background-position:0 100px} }
-
-    /* ── GRID + GLOW ── */
-    .bg-grid{
-      position:fixed;inset:0;z-index:-1;pointer-events:none;
-      background: radial-gradient(ellipse at 20% 50%, rgba(0,100,255,0.04) 0%, transparent 60%),
-                  radial-gradient(ellipse at 80% 20%, rgba(0,200,255,0.03) 0%, transparent 50%),
-                  linear-gradient(180deg, rgba(2,10,16,0.7), rgba(2,10,16,0.85));
-    }
-    .neon-lines{
-      position:absolute;inset:0;opacity:.2;
-      background-image:
-        repeating-linear-gradient(0deg, rgba(0,200,255,0.04) 0 1px, transparent 1px 60px),
-        repeating-linear-gradient(90deg, rgba(0,100,255,0.03) 0 1px, transparent 1px 60px);
-    }
-
-    /* ── LAYOUT ── */
-    .container{max-width:1100px;margin:0 auto;padding:40px 30px;position:relative;z-index:1}
-
-    /* ── HEADER ── */
-    header{display:flex;align-items:center;justify-content:space-between;padding:10px 0 20px}
-    .brand{display:flex;gap:14px;align-items:center}
-    .logo{
-      width:48px;height:48px;border-radius:10px;
-      background:linear-gradient(135deg,rgba(0,200,255,0.15),rgba(0,50,255,0.08));
-      display:flex;align-items:center;justify-content:center;
-      border:1px solid var(--border-bright);
-      box-shadow: 0 0 20px rgba(0,200,255,0.1);
-    }
-    .brand-name{font-family:var(--font-display);font-size:20px;font-weight:800;color:var(--text-bright)}
-    .brand-sub{color:var(--text-dim);font-size:11px;margin-top:2px;letter-spacing:0.05em}
-    nav a{color:var(--text-dim);text-decoration:none;font-size:12px;letter-spacing:0.1em;transition:color .2s}
-    nav a:hover{color:var(--accent)}
-
-    /* ── TERMINAL TAG ── */
-    .terminal-tag{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:6px 14px;border-radius:4px;
-      background: rgba(0,200,255,0.05);
-      border:1px solid rgba(0,200,255,0.15);
-      color:var(--accent);font-size:11px;font-weight:600;letter-spacing:0.1em;
-    }
-    .terminal-tag::before{content:'>';color:var(--accent);margin-right:2px}
-    .blink{animation:blink 1s step-end infinite}
-    @keyframes blink{50%{opacity:0}}
-
-    /* ── HERO ── */
-    .hero{display:grid;grid-template-columns:1fr 460px;gap:30px;align-items:center;margin-top:36px}
-    .hero-left{padding:22px 22px 22px 0}
-    .hero-title{font-family:var(--font-display);font-size:40px;font-weight:800;color:var(--text-bright);line-height:1.1;margin-top:14px}
-    .hero-title span{color:var(--accent)}
-    .hero-sub{color:var(--text-dim);margin-top:14px;font-size:13px;line-height:1.7;font-family:var(--font-mono)}
-    .cta{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}
-    .btn{padding:11px 20px;border-radius:6px;cursor:pointer;font-weight:700;font-size:13px;font-family:var(--font-mono);transition:all .2s;border:none}
-    .btn-primary{
-      background:linear-gradient(90deg,var(--accent),var(--accent2));
-      color:#020a10;
-      box-shadow:0 0 20px rgba(0,200,255,0.2);
-    }
-    .btn-primary:hover{box-shadow:0 0 30px rgba(0,200,255,0.4);transform:translateY(-1px)}
-    .btn-ghost{
-      background:transparent;color:var(--text);
-      border:1px solid var(--border-bright);
-    }
-    .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
-    .contact-line{margin-top:18px;color:var(--text-dim);font-size:12px}
-    .contact-line a{color:var(--accent);text-decoration:none}
-    .contact-line a:hover{text-decoration:underline}
-
-    /* ── CANVAS ── */
-    .canvas-wrap{
-      width:100%;height:420px;
-      background:linear-gradient(180deg,rgba(0,20,40,0.5),rgba(0,10,20,0.7));
-      border-radius:12px;padding:8px;
-      border:1px solid var(--border);
-      box-shadow: inset 0 0 40px rgba(0,200,255,0.03), 0 0 40px rgba(0,0,0,0.4);
-    }
-
-    /* ── SECTIONS ── */
-    section{
-      margin-top:50px;padding:28px;
-      background: var(--surface);
-      border-radius:12px;
-      border:1px solid var(--border);
-      position:relative;overflow:hidden;
-    }
-    section::before{
-      content:'';position:absolute;top:0;left:0;right:0;height:1px;
-      background:linear-gradient(90deg,transparent,var(--accent),transparent);
-      opacity:0.3;
-    }
-    .section-label{
-      font-size:10px;letter-spacing:0.2em;color:var(--accent);
-      text-transform:uppercase;margin-bottom:10px;
-      font-weight:600;
-    }
-    .section-label::before{content:'// '}
-    h2{font-family:var(--font-display);font-size:22px;font-weight:800;color:var(--text-bright);margin-bottom:16px}
-    h3.subsection{
-      font-size:12px;letter-spacing:0.15em;color:var(--accent);
-      text-transform:uppercase;margin:24px 0 12px;
-      font-weight:600;
-    }
-    h3.subsection::before{content:'> '}
-
-    /* ── CARDS ── */
-    .cards{display:flex;gap:16px;flex-wrap:wrap}
-    .card{
-      flex:1;min-width:200px;padding:18px;border-radius:10px;
-      background:rgba(0,200,255,0.02);
-      border:1px solid var(--border);
-      transition:border-color .2s, box-shadow .2s;
-    }
-    .card:hover{border-color:var(--border-bright);box-shadow:0 0 20px rgba(0,200,255,0.05)}
-    .card h3{color:var(--text-bright);margin-bottom:8px;font-size:14px;font-family:var(--font-display)}
-    .muted{color:var(--text-dim);font-size:13px;line-height:1.6}
-
-    /* ── MARQUEE ── */
-    .marquee{
-      background:rgba(0,0,0,0.3);width:100%;overflow:hidden;
-      white-space:nowrap;margin:28px 0 0;
-      border-top:1px solid var(--border);border-bottom:1px solid var(--border);
-      padding:10px 0;
-    }
-    .marquee-inner{display:inline-block;animation:scroll 20s linear infinite}
-    .marquee img{height:36px;margin:0 22px;opacity:0.6;filter:grayscale(1) brightness(2);transition:opacity .2s}
-    .marquee img:hover{opacity:1}
-    @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-100%)}}
-
-    /* ── PROJECTS ── */
-    .projects{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-    .proj{
-      background:rgba(0,10,20,0.6);border-radius:10px;padding:10px;
-      min-height:140px;border:1px solid var(--border);
-      cursor:pointer;transition:transform .25s,box-shadow .25s,border-color .25s;
-      overflow:hidden;
-    }
-    .proj img{width:100%;height:120px;object-fit:cover;border-radius:7px;transition:transform .3s}
-    .proj:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,200,255,0.1);border-color:var(--border-bright)}
-    .proj:hover img{transform:scale(1.06)}
-    .proj .label{margin-top:8px;color:var(--text-bright);font-weight:700;font-size:12px}
-
-    /* ── GHL EXPERT SECTION ── */
-    .ghl-section{
-      margin-top:50px;padding:0;
-      border-radius:14px;
-      border:1px solid rgba(0,255,136,0.15);
-      background: linear-gradient(180deg, rgba(0,255,136,0.02), rgba(0,20,40,0.6));
-      overflow:hidden;position:relative;
-    }
-    .ghl-section::before{
-      content:'';position:absolute;top:0;left:0;right:0;height:1px;
-      background:linear-gradient(90deg,transparent,var(--accent-ghl),transparent);
-    }
-    .ghl-section::after{
-      content:'';position:absolute;
-      width:400px;height:400px;border-radius:50%;
-      background:radial-gradient(circle,rgba(0,255,136,0.04),transparent 70%);
-      top:-100px;right:-100px;pointer-events:none;
-    }
-    .ghl-header{
-      padding:28px 28px 0;
-      display:flex;align-items:flex-start;justify-content:space-between;gap:20px;
-      flex-wrap:wrap;
-    }
-    .ghl-badge{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:5px 12px;border-radius:4px;
-      background:rgba(0,255,136,0.08);
-      border:1px solid rgba(0,255,136,0.2);
-      color:var(--accent-ghl);font-size:10px;font-weight:700;letter-spacing:0.15em;
-      text-transform:uppercase;margin-bottom:10px;
-    }
-    .ghl-badge::before{content:'●';font-size:8px;animation:blink 1.5s step-end infinite}
-    .ghl-title{
-      font-family:var(--font-display);font-size:26px;font-weight:800;
-      color:var(--text-bright);line-height:1.2;
-    }
-    .ghl-title span{color:var(--accent-ghl)}
-    .ghl-desc{color:var(--text-dim);font-size:13px;line-height:1.7;margin-top:10px;max-width:600px}
-
-    /* GHL capabilities grid */
-    .ghl-caps{
-      display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
-      padding:24px 28px 0;
-    }
-    .ghl-cap{
-      padding:16px;border-radius:8px;
-      background:rgba(0,255,136,0.03);
-      border:1px solid rgba(0,255,136,0.08);
-      transition:all .2s;
-    }
-    .ghl-cap:hover{
-      background:rgba(0,255,136,0.06);
-      border-color:rgba(0,255,136,0.2);
-      transform:translateY(-2px);
-    }
-    .ghl-cap-icon{font-size:18px;margin-bottom:8px}
-    .ghl-cap-title{
-      font-size:12px;font-weight:700;color:var(--accent-ghl);
-      letter-spacing:0.05em;margin-bottom:6px;
-      font-family:var(--font-display);
-    }
-    .ghl-cap-desc{color:var(--text-dim);font-size:11px;line-height:1.6}
-
-    /* GHL case study */
-    .ghl-case{
-      margin:24px 28px 0;
-      border:1px solid rgba(0,255,136,0.1);
-      border-radius:10px;overflow:hidden;
-      background:rgba(0,0,0,0.3);
-    }
-    .ghl-case-header{
-      padding:14px 18px;
-      background:rgba(0,255,136,0.05);
-      border-bottom:1px solid rgba(0,255,136,0.1);
-      display:flex;align-items:center;gap:10px;
-    }
-    .ghl-case-header .dot{width:8px;height:8px;border-radius:50%;background:var(--accent-ghl);box-shadow:0 0 8px var(--accent-ghl)}
-    .ghl-case-header span{color:var(--accent-ghl);font-size:11px;font-weight:700;letter-spacing:0.1em}
-    .ghl-case-body{
-      display:grid;grid-template-columns:1fr 1fr;gap:0;
-    }
-    .ghl-case-left{padding:20px 24px;border-right:1px solid rgba(0,255,136,0.08)}
-    .ghl-case-right{padding:20px 24px}
-    .case-label{font-size:10px;letter-spacing:0.15em;color:var(--accent-ghl);text-transform:uppercase;margin-bottom:10px;font-weight:600}
-    .case-label::before{content:'// '}
-
-    /* flow steps */
-    .flow-steps{display:flex;flex-direction:column;gap:8px}
-    .flow-step{
-      display:flex;align-items:flex-start;gap:10px;
-      padding:10px 12px;border-radius:6px;
-      background:rgba(0,255,136,0.02);
-      border:1px solid rgba(0,255,136,0.06);
-      transition:all .2s;cursor:default;
-    }
-    .flow-step:hover{background:rgba(0,255,136,0.05);border-color:rgba(0,255,136,0.15)}
-    .flow-step-num{
-      min-width:22px;height:22px;border-radius:4px;
-      background:rgba(0,255,136,0.1);
-      display:flex;align-items:center;justify-content:center;
-      font-size:10px;font-weight:700;color:var(--accent-ghl);
-    }
-    .flow-step-text{font-size:11px;color:var(--text-dim);line-height:1.5;padding-top:2px}
-    .flow-step-text strong{color:var(--text-bright)}
-
-    /* tech stack tags */
-    .tech-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
-    .tech-tag{
-      padding:4px 10px;border-radius:4px;font-size:10px;font-weight:600;
-      letter-spacing:0.08em;background:rgba(0,255,136,0.06);
-      border:1px solid rgba(0,255,136,0.15);color:var(--accent-ghl);
-    }
-
-    /* site preview */
-    .site-preview{
-      border-radius:8px;overflow:hidden;
-      border:1px solid rgba(0,255,136,0.1);
-      position:relative;
-    }
-    .site-preview-bar{
-      padding:8px 12px;background:rgba(0,0,0,0.5);
-      display:flex;align-items:center;gap:6px;
-      border-bottom:1px solid rgba(0,255,136,0.08);
-    }
-    .site-preview-bar .dot-r{width:8px;height:8px;border-radius:50%;background:#ff5f57}
-    .site-preview-bar .dot-y{width:8px;height:8px;border-radius:50%;background:#febc2e}
-    .site-preview-bar .dot-g{width:8px;height:8px;border-radius:50%;background:#28c840}
-    .site-preview-url{
-      margin-left:8px;font-size:10px;color:var(--text-dim);
-      background:rgba(255,255,255,0.04);padding:3px 10px;border-radius:4px;
-      border:1px solid rgba(255,255,255,0.05);
-    }
-    .site-preview img{width:100%;display:block;max-height:200px;object-fit:cover;object-position:top}
-    .site-preview-placeholder{
-      width:100%;height:180px;
-      background:linear-gradient(135deg,rgba(0,20,40,0.8),rgba(0,40,20,0.6));
-      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
-    }
-    .site-preview-placeholder span{color:var(--text-dim);font-size:11px}
-    .site-preview-placeholder .icon{font-size:28px;opacity:0.4}
-
-    /* workflow preview */
-    .workflow-preview{
-      border-radius:8px;overflow:hidden;
-      border:1px solid rgba(0,255,136,0.1);
-    }
-    .workflow-preview-bar{
-      padding:8px 14px;background:rgba(0,0,0,0.5);
-      border-bottom:1px solid rgba(0,255,136,0.08);
-      display:flex;align-items:center;justify-content:space-between;
-    }
-    .workflow-preview-bar span{font-size:10px;color:var(--accent-ghl);font-weight:600}
-    .workflow-preview-bar .status{
-      display:flex;align-items:center;gap:5px;
-      font-size:10px;color:var(--accent-ghl);
-    }
-    .workflow-preview-bar .status::before{content:'●';font-size:8px;animation:blink 1.5s step-end infinite}
-    .workflow-img{width:100%;display:block;max-height:160px;object-fit:cover;object-position:top}
-    .workflow-placeholder{
-      width:100%;height:140px;
-      background:rgba(0,10,20,0.8);
-      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
-    }
-    .workflow-placeholder span{color:var(--text-dim);font-size:11px}
-    .workflow-placeholder .icon{font-size:24px;opacity:0.3}
-
-    .ghl-footer{
-      padding:18px 28px 24px;
-      display:flex;align-items:center;justify-content:space-between;
-      flex-wrap:wrap;gap:12px;
-      border-top:1px solid rgba(0,255,136,0.08);
-      margin-top:24px;
-    }
-    .ghl-footer-text{font-size:11px;color:var(--text-dim);line-height:1.6}
-    .ghl-footer-text strong{color:var(--accent-ghl)}
-    .btn-ghl{
-      padding:10px 20px;border-radius:6px;cursor:pointer;
-      font-weight:700;font-size:12px;font-family:var(--font-mono);
-      background:rgba(0,255,136,0.08);color:var(--accent-ghl);
-      border:1px solid rgba(0,255,136,0.25);
-      transition:all .2s;
-    }
-    .btn-ghl:hover{background:rgba(0,255,136,0.15);box-shadow:0 0 20px rgba(0,255,136,0.15)}
-
-    /* ── MODAL ── */
-    .modal-overlay{
-      position:fixed;inset:0;background:rgba(2,10,16,0.9);
-      display:none;align-items:center;justify-content:center;z-index:999;
-      backdrop-filter:blur(4px);
-    }
-    .modal-content{
-      background:#061420;max-width:640px;width:90%;padding:28px;
-      border-radius:14px;border:1px solid var(--border-bright);
-      box-shadow:0 30px 80px rgba(0,0,0,0.8),0 0 60px rgba(0,200,255,0.05);
-      position:relative;
-    }
-    .modal-content h3{color:var(--text-bright);margin-bottom:10px;font-family:var(--font-display)}
-    .modal-content p,.modal-content li{color:var(--text-dim);font-size:13px;line-height:1.7}
-    .modal-section{margin-top:14px}
-    .modal-section strong{color:var(--accent);font-size:11px;letter-spacing:0.1em;text-transform:uppercase}
-    .modal-close{
-      position:absolute;top:14px;right:16px;
-      background:none;border:none;color:var(--text-dim);
-      font-size:22px;cursor:pointer;transition:color .2s;
-    }
-    .modal-close:hover{color:var(--accent)}
-
-    /* ── PREVIEW CARD ── */
-    .preview-card{
-      position:fixed;background:#061420;
-      border:1px solid var(--border-bright);border-radius:10px;
-      padding:14px;width:280px;pointer-events:none;
-      display:none;z-index:998;
-      box-shadow:0 25px 60px rgba(0,0,0,0.8),0 0 30px rgba(0,200,255,0.05);
-    }
-    .preview-card h4{color:var(--text-bright);margin-bottom:6px;font-family:var(--font-display);font-size:13px}
-    .preview-card p{color:var(--text-dim);font-size:12px;line-height:1.5}
-
-    /* ── CONTACT ── */
-    .contact-grid{display:grid;grid-template-columns:1fr 360px;gap:18px}
-    form{display:flex;flex-direction:column;gap:10px}
-    input,textarea{
-      background:rgba(255,255,255,0.02);
-      border:1px solid var(--border);
-      padding:12px;border-radius:6px;
-      color:var(--text-bright);font-family:var(--font-mono);font-size:13px;
-      transition:border-color .2s;outline:none;
-    }
-    input:focus,textarea:focus{border-color:var(--border-bright)}
-    .small-muted{color:var(--text-dim);font-size:12px}
-
-    footer{margin-top:40px;color:var(--text-dim);font-size:12px;text-align:center;padding-bottom:20px}
-
-    spline-viewer{border-radius:12px;overflow:hidden}
-
-    /* ── RESPONSIVE ── */
-    @media(max-width:980px){
-      .hero{grid-template-columns:1fr}
-      .contact-grid{grid-template-columns:1fr}
-      .projects{grid-template-columns:repeat(2,1fr)}
-      .canvas-wrap{height:300px}
-      .ghl-caps{grid-template-columns:repeat(2,1fr)}
-      .ghl-case-body{grid-template-columns:1fr}
-      .ghl-case-left{border-right:none;border-bottom:1px solid rgba(0,255,136,0.08)}
-    }
-    @media(max-width:560px){
-      .projects{grid-template-columns:1fr}
-      .ghl-caps{grid-template-columns:1fr}
-      .cards{flex-direction:column}
-    }
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Michael Alteza — AI Automation Specialist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+<script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+<style>
+:root{
+  --bg:#020408;--cyan:#00ffe7;--pink:#ff2d78;--yellow:#ffe600;
+  --green:#00ff88;--text:#c8f0ff;--dim:#3a6070;
+  --font-hud:'Orbitron',monospace;--font-mono:'Share Tech Mono',monospace;--font-body:'Rajdhani',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflow-x:hidden;cursor:none}
+#cursor{position:fixed;width:10px;height:10px;border-radius:50%;background:var(--cyan);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);box-shadow:0 0 12px var(--cyan),0 0 30px var(--cyan);mix-blend-mode:difference}
+#cursor-ring{position:fixed;width:34px;height:34px;border-radius:50%;border:1px solid var(--cyan);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .12s ease;opacity:0.5}
+#matrix-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:0.07;pointer-events:none}
+body::after{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.04) 2px,rgba(0,0,0,0.04) 4px)}
+.grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(0,255,231,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,231,0.025) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse at center,black 40%,transparent 80%)}
+.wrap{max-width:1140px;margin:0 auto;padding:0 30px;position:relative;z-index:2}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(2,4,8,0.88);backdrop-filter:blur(14px);border-bottom:1px solid rgba(0,255,231,0.07)}
+.nav-logo{font-family:var(--font-hud);font-size:14px;font-weight:700;color:var(--cyan);letter-spacing:0.2em;text-shadow:0 0 20px var(--cyan)}
+.nav-logo span{color:var(--pink)}
+.nav-links{display:flex;gap:28px}
+.nav-links a{font-family:var(--font-mono);font-size:11px;color:var(--dim);text-decoration:none;letter-spacing:0.1em;text-transform:uppercase;transition:color .2s}
+.nav-links a:hover{color:var(--cyan);text-shadow:0 0 10px var(--cyan)}
+.nav-status{font-family:var(--font-mono);font-size:11px;color:var(--green);display:flex;align-items:center;gap:6px}
+.nav-status::before{content:'●';animation:gp 1.5s ease-in-out infinite}
+@keyframes gp{0%,100%{opacity:1;text-shadow:0 0 8px var(--green)}50%{opacity:0.3}}
+.hero{min-height:100vh;display:flex;align-items:center;padding-top:80px;position:relative;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;width:100%}
+.glitch-name{font-family:var(--font-hud);font-size:50px;font-weight:900;color:var(--cyan);line-height:1.05;text-shadow:0 0 30px var(--cyan),0 0 60px rgba(0,255,231,0.3);animation:glitch 4s infinite}
+@keyframes glitch{0%,89%,100%{text-shadow:0 0 30px var(--cyan),0 0 60px rgba(0,255,231,0.3)}91%{text-shadow:-3px 0 var(--pink),3px 0 var(--cyan);transform:skew(-1deg)}93%{text-shadow:3px 0 var(--pink),-3px 0 var(--yellow);transform:skew(1deg)}95%{text-shadow:-2px 0 var(--cyan),2px 0 var(--pink);transform:skew(-0.5deg)}97%{text-shadow:0 0 30px var(--cyan);transform:skew(0)}}
+.hero-role{font-family:var(--font-mono);font-size:12px;color:var(--pink);letter-spacing:0.25em;text-transform:uppercase;margin-top:10px}
+.hero-role::before{content:'> ';color:var(--yellow)}
+.typing-wrap{font-family:var(--font-mono);font-size:13px;color:var(--text);margin-top:18px;min-height:22px}
+.typing-wrap::after{content:'█';animation:blink .7s step-end infinite;color:var(--cyan)}
+@keyframes blink{50%{opacity:0}}
+.hero-desc{font-size:14px;color:rgba(200,240,255,0.55);line-height:1.7;margin-top:14px}
+.profile-ring{display:flex;align-items:center;gap:16px;margin-top:26px}
+.profile-img-wrap{position:relative;width:70px;height:70px;flex-shrink:0}
+.profile-img-wrap::before{content:'';position:absolute;inset:-3px;border-radius:50%;background:conic-gradient(var(--cyan),var(--pink),var(--yellow),var(--cyan));animation:spin 3s linear infinite;z-index:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.profile-img{position:absolute;inset:4px;border-radius:50%;object-fit:cover;z-index:2;width:calc(100% - 8px);height:calc(100% - 8px)}
+.p-name{font-family:var(--font-hud);font-size:13px;color:var(--cyan)}
+.p-tag{font-family:var(--font-mono);font-size:10px;color:var(--dim);margin-top:3px}
+.p-contact{font-family:var(--font-mono);font-size:10px;color:var(--text);margin-top:4px}
+.p-contact a{color:var(--cyan);text-decoration:none}
+.cta-row{display:flex;gap:12px;margin-top:26px;flex-wrap:wrap}
+.btn{padding:11px 22px;border-radius:4px;font-family:var(--font-hud);font-size:11px;font-weight:700;letter-spacing:0.15em;cursor:none;transition:all .2s;border:none;text-transform:uppercase}
+.btn-cyan{background:transparent;color:var(--cyan);border:1px solid var(--cyan);box-shadow:0 0 15px rgba(0,255,231,0.15)}
+.btn-cyan:hover{background:rgba(0,255,231,0.08);box-shadow:0 0 30px rgba(0,255,231,0.35)}
+.btn-pink{background:var(--pink);color:#000;box-shadow:0 0 20px rgba(255,45,120,0.4)}
+.btn-pink:hover{box-shadow:0 0 40px rgba(255,45,120,0.6);transform:translateY(-2px)}
+.spline-frame{width:100%;height:500px;border-radius:12px;overflow:hidden;border:1px solid rgba(0,255,231,0.1);box-shadow:0 0 60px rgba(0,255,231,0.05);position:relative}
+.hc{position:absolute;width:18px;height:18px;border-color:var(--cyan);border-style:solid;z-index:5}
+.hc.tl{top:10px;left:10px;border-width:2px 0 0 2px}
+.hc.tr{top:10px;right:10px;border-width:2px 2px 0 0}
+.hc.bl{bottom:10px;left:10px;border-width:0 0 2px 2px}
+.hc.br{bottom:10px;right:10px;border-width:0 2px 2px 0}
+.hc-label{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:9px;color:var(--cyan);letter-spacing:0.2em;z-index:5;text-shadow:0 0 10px var(--cyan)}
+section{padding:80px 0;position:relative;z-index:2}
+.sec-tag{font-family:var(--font-mono);font-size:10px;color:var(--pink);letter-spacing:0.25em;text-transform:uppercase;margin-bottom:8px}
+.sec-tag::before{content:'// '}
+.sec-title{font-family:var(--font-hud);font-size:26px;font-weight:700;color:var(--text)}
+.sec-title span{color:var(--cyan)}
+.sec-line{height:1px;margin-top:12px;margin-bottom:36px;background:linear-gradient(90deg,var(--cyan),var(--pink),transparent);opacity:0.3}
+.skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.skill-card{padding:22px;border-radius:8px;background:linear-gradient(135deg,rgba(0,255,231,0.03),transparent);border:1px solid rgba(0,255,231,0.07);transition:all .3s;position:relative;overflow:hidden}
+.skill-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:0;transition:opacity .3s}
+.skill-card:hover{border-color:rgba(0,255,231,0.22);transform:translateY(-4px);box-shadow:0 20px 40px rgba(0,0,0,0.4),0 0 20px rgba(0,255,231,0.05)}
+.skill-card:hover::before{opacity:1}
+.s-ico{font-size:22px;margin-bottom:12px}
+.s-name{font-family:var(--font-hud);font-size:12px;color:var(--cyan);margin-bottom:7px}
+.s-desc{font-size:12px;color:var(--dim);line-height:1.6}
+/* SNAKE */
+.snake-wrap{background:rgba(0,0,0,0.6);border-radius:12px;border:1px solid rgba(0,255,231,0.1);padding:22px;position:relative;overflow:hidden}
+.snake-wrap::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 24px,rgba(0,255,231,0.015) 24px,rgba(0,255,231,0.015) 25px),repeating-linear-gradient(90deg,transparent,transparent 24px,rgba(0,255,231,0.015) 24px,rgba(0,255,231,0.015) 25px)}
+.snake-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+.snake-ttl{font-family:var(--font-hud);font-size:12px;color:var(--yellow);letter-spacing:0.1em}
+.snake-ctrl{font-family:var(--font-mono);font-size:10px;color:var(--dim)}
+.snake-scr{font-family:var(--font-hud);font-size:12px;color:var(--green)}
+#snakeCanvas{display:block;margin:0 auto;border-radius:6px;border:1px solid rgba(0,255,231,0.12);background:#010608;max-width:100%}
+.snake-msg{text-align:center;margin-top:10px;font-family:var(--font-mono);font-size:11px;color:var(--dim);min-height:18px}
+/* PROJECTS */
+.proj-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.proj-card{border-radius:10px;overflow:hidden;border:1px solid rgba(0,255,231,0.07);background:rgba(0,8,18,0.7);cursor:none;transition:all .3s;position:relative}
+.proj-card:hover{border-color:var(--cyan);box-shadow:0 0 30px rgba(0,255,231,0.08);transform:translateY(-5px)}
+.proj-img{width:100%;height:115px;object-fit:cover;transition:transform .3s}
+.proj-card:hover .proj-img{transform:scale(1.06)}
+.proj-ph{width:100%;height:115px;background:linear-gradient(135deg,#010c18,#031020);display:flex;align-items:center;justify-content:center;font-size:30px}
+.proj-body{padding:13px}
+.proj-tag{font-family:var(--font-mono);font-size:9px;color:var(--pink);letter-spacing:0.08em;margin-bottom:5px}
+.proj-name{font-family:var(--font-hud);font-size:11px;color:var(--text);line-height:1.4}
+.proj-arr{position:absolute;top:10px;right:10px;width:26px;height:26px;border-radius:50%;background:rgba(0,255,231,0.07);border:1px solid rgba(0,255,231,0.2);display:flex;align-items:center;justify-content:center;font-size:11px;opacity:0;transition:opacity .2s}
+.proj-card:hover .proj-arr{opacity:1}
+/* GHL */
+.ghl-wrap{border-radius:14px;overflow:hidden;border:1px solid rgba(0,255,136,0.14);background:linear-gradient(180deg,rgba(0,255,136,0.02),rgba(0,0,0,0));position:relative}
+.ghl-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--green),transparent)}
+.ghl-top{padding:30px 30px 0}
+.ghl-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:3px;background:rgba(0,255,136,0.07);border:1px solid rgba(0,255,136,0.22);font-family:var(--font-mono);font-size:10px;color:var(--green);letter-spacing:0.18em;text-transform:uppercase}
+.ghl-badge::before{content:'●';font-size:8px;animation:gp 1.5s ease-in-out infinite}
+.ghl-h{font-family:var(--font-hud);font-size:22px;color:var(--text);margin-top:10px}
+.ghl-h span{color:var(--green)}
+.ghl-p{font-size:13px;color:var(--dim);line-height:1.7;margin-top:9px;max-width:560px}
+.ghl-caps{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;padding:22px 30px 0}
+.ghl-cap{padding:15px;border-radius:7px;background:rgba(0,255,136,0.02);border:1px solid rgba(0,255,136,0.06);transition:all .2s}
+.ghl-cap:hover{background:rgba(0,255,136,0.06);border-color:rgba(0,255,136,0.18);transform:translateY(-3px)}
+.gc-ico{font-size:18px;margin-bottom:7px}
+.gc-t{font-family:var(--font-hud);font-size:10px;color:var(--green);margin-bottom:5px}
+.gc-d{font-size:11px;color:var(--dim);line-height:1.5}
+.case-box{margin:22px 30px 0;border-radius:9px;overflow:hidden;border:1px solid rgba(0,255,136,0.09);background:rgba(0,0,0,0.4)}
+.case-bar{padding:11px 16px;background:rgba(0,255,136,0.04);border-bottom:1px solid rgba(0,255,136,0.08);display:flex;align-items:center;gap:9px}
+.case-bar .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+.case-bar span{font-family:var(--font-mono);font-size:10px;color:var(--green);letter-spacing:0.08em}
+.case-cols{display:grid;grid-template-columns:1fr 1fr}
+.case-col{padding:20px 22px}
+.case-col+.case-col{border-left:1px solid rgba(0,255,136,0.06)}
+.c-lbl{font-family:var(--font-mono);font-size:9px;color:var(--green);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:11px}
+.c-lbl::before{content:'// '}
+.flow-list{display:flex;flex-direction:column;gap:7px}
+.fi{display:flex;gap:9px;align-items:flex-start;padding:9px 11px;border-radius:5px;background:rgba(0,255,136,0.02);border:1px solid rgba(0,255,136,0.05);transition:all .2s}
+.fi:hover{background:rgba(0,255,136,0.05);border-color:rgba(0,255,136,0.14)}
+.fi-n{min-width:20px;height:20px;border-radius:3px;background:rgba(0,255,136,0.1);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:9px;color:var(--green);font-weight:700}
+.fi-t{font-size:11px;color:var(--dim);line-height:1.5;padding-top:2px}
+.fi-t strong{color:var(--text)}
+.ttags{display:flex;flex-wrap:wrap;gap:5px;margin-top:11px}
+.ttag{padding:3px 9px;border-radius:3px;font-family:var(--font-mono);font-size:9px;background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.13);color:var(--green)}
+.prev-box{border-radius:7px;overflow:hidden;border:1px solid rgba(0,255,136,0.09);background:#010a06}
+.prev-bar{padding:7px 11px;background:rgba(0,0,0,0.5);border-bottom:1px solid rgba(0,255,136,0.06);display:flex;align-items:center;gap:5px}
+.dr{width:7px;height:7px;border-radius:50%;background:#ff5f57}
+.dy{width:7px;height:7px;border-radius:50%;background:#febc2e}
+.dg{width:7px;height:7px;border-radius:50%;background:#28c840}
+.prev-url{margin-left:6px;font-family:var(--font-mono);font-size:9px;color:var(--dim);background:rgba(255,255,255,0.04);padding:2px 7px;border-radius:3px}
+.prev-ph{width:100%;height:130px;background:linear-gradient(135deg,#010c08,#021008);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.prev-ph span{font-family:var(--font-mono);font-size:10px;color:var(--dim)}
+.wf-bar2{padding:7px 12px;background:rgba(0,0,0,0.5);border-bottom:1px solid rgba(0,255,136,0.06);display:flex;align-items:center;justify-content:space-between}
+.wf-n{font-family:var(--font-mono);font-size:9px;color:var(--green)}
+.wf-live{font-family:var(--font-mono);font-size:9px;color:var(--green);display:flex;align-items:center;gap:3px}
+.wf-live::before{content:'●';font-size:7px;animation:gp 1.5s ease-in-out infinite}
+.pip-box{margin-top:12px;padding:13px;border-radius:7px;background:rgba(0,255,136,0.02);border:1px solid rgba(0,255,136,0.06)}
+.pip-row{display:flex;align-items:center;gap:7px;margin-top:7px;font-size:11px;color:var(--dim)}
+.dot-g{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 5px var(--green);flex-shrink:0}
+.dot-b{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 5px var(--cyan);flex-shrink:0}
+.ghl-footer{padding:18px 30px 26px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;border-top:1px solid rgba(0,255,136,0.06);margin-top:22px}
+.ghl-footer p{font-size:12px;color:var(--dim);line-height:1.6}
+.ghl-footer p strong{color:var(--green)}
+.btn-green{padding:10px 20px;border-radius:4px;font-family:var(--font-hud);font-size:10px;font-weight:700;letter-spacing:0.15em;background:rgba(0,255,136,0.07);color:var(--green);border:1px solid rgba(0,255,136,0.22);cursor:none;transition:all .2s}
+.btn-green:hover{background:rgba(0,255,136,0.14);box-shadow:0 0 20px rgba(0,255,136,0.18)}
+/* CONTACT */
+.contact-grid{display:grid;grid-template-columns:1fr 360px;gap:20px}
+.cinfo{background:rgba(0,0,0,0.4);border-radius:10px;border:1px solid rgba(0,255,231,0.07);padding:22px}
+.crow{display:flex;align-items:flex-start;gap:12px;margin-bottom:16px}
+.crow:last-child{margin-bottom:0}
+.c-ico{font-size:17px;flex-shrink:0;margin-top:1px}
+.c-lbl2{font-family:var(--font-mono);font-size:9px;color:var(--cyan);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px}
+.c-val{font-size:13px;color:var(--text)}
+.c-val a{color:var(--cyan);text-decoration:none}
+.c-val a:hover{text-shadow:0 0 8px var(--cyan)}
+.form-box{background:rgba(0,0,0,0.4);border-radius:10px;border:1px solid rgba(0,255,231,0.07);padding:22px}
+.form-box input,.form-box textarea{width:100%;background:rgba(0,255,231,0.02);border:1px solid rgba(0,255,231,0.07);padding:11px 13px;border-radius:5px;color:var(--text);font-family:var(--font-mono);font-size:12px;transition:border-color .2s;outline:none;margin-bottom:9px;display:block}
+.form-box input:focus,.form-box textarea:focus{border-color:var(--cyan);box-shadow:0 0 8px rgba(0,255,231,0.08)}
+.cal-wrap{margin-top:18px;border-radius:9px;overflow:hidden;border:1px solid rgba(0,255,231,0.07);min-height:300px}
+.modal-overlay{position:fixed;inset:0;background:rgba(2,4,8,0.93);display:none;align-items:center;justify-content:center;z-index:999;backdrop-filter:blur(6px)}
+.modal-box{background:#040d18;max-width:600px;width:92%;border-radius:11px;border:1px solid rgba(0,255,231,0.18);padding:26px;position:relative;box-shadow:0 0 80px rgba(0,255,231,0.07)}
+.modal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent)}
+.modal-box h3{font-family:var(--font-hud);font-size:15px;color:var(--cyan);margin-bottom:9px}
+.modal-box p,.modal-box li{font-size:12px;color:var(--dim);line-height:1.7;margin-bottom:3px}
+.m-sec{margin-top:12px}
+.m-sec strong{font-family:var(--font-mono);font-size:9px;color:var(--pink);letter-spacing:0.15em;text-transform:uppercase}
+.modal-close{position:absolute;top:13px;right:14px;background:none;border:none;color:var(--dim);font-size:20px;cursor:none;transition:color .2s}
+.modal-close:hover{color:var(--cyan)}
+.hover-prev{position:fixed;background:#040d18;border:1px solid rgba(0,255,231,0.18);border-radius:7px;padding:13px;width:250px;pointer-events:none;display:none;z-index:998;box-shadow:0 20px 60px rgba(0,0,0,0.8)}
+.hover-prev h4{font-family:var(--font-hud);font-size:11px;color:var(--cyan);margin-bottom:5px}
+.hover-prev p{font-size:11px;color:var(--dim);line-height:1.4}
+footer{text-align:center;padding:28px 0;font-family:var(--font-mono);font-size:10px;color:var(--dim);border-top:1px solid rgba(0,255,231,0.05);position:relative;z-index:2}
+footer span{color:var(--cyan)}
+.sub-lbl{font-family:var(--font-mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;margin:28px 0 12px}
+.n8n-lbl{color:var(--cyan)}
+.n8n-lbl::before{content:'> '}
+.make-lbl{color:var(--pink)}
+.make-lbl::before{content:'> '}
+@media(max-width:900px){.hero-grid,.contact-grid{grid-template-columns:1fr}.skills-grid,.proj-grid,.ghl-caps{grid-template-columns:repeat(2,1fr)}.case-cols{grid-template-columns:1fr}.case-col+.case-col{border-left:none;border-top:1px solid rgba(0,255,136,0.06)}.spline-frame{height:320px}.glitch-name{font-size:36px}}
+@media(max-width:560px){.skills-grid,.proj-grid,.ghl-caps{grid-template-columns:1fr}.nav-links{display:none}}
+</style>
 </head>
 <body>
-  <div class="bg-grid"><div class="neon-lines"></div></div>
+<canvas id="matrix-canvas"></canvas>
+<div class="grid-bg"></div>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
 
-  <div class="container" id="app">
-
-    <!-- ── HEADER ── -->
-    <header>
-      <div class="brand">
-        <div class="logo">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-            <path d="M4 12h16M12 4v16" stroke="#00c8ff" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <div>
-          <div class="brand-name">Michael Alteza</div>
-          <div class="brand-sub">AI AUTOMATION • SOCIAL MEDIA • CRM</div>
-        </div>
-      </div>
-      <nav>
-        <a href="#projects">Projects</a>
-        &nbsp;&nbsp;
-        <a href="#ghl-expert">GHL</a>
-      </nav>
-    </header>
-
-    <main>
-
-      <!-- ── HERO ── -->
-      <div class="hero">
-        <div class="hero-left">
-          <div class="terminal-tag">AUTOMATION SPECIALIST<span class="blink">_</span></div>
-          <div class="hero-title">I build intelligent systems that <span>automate</span> and scale your business</div>
-          <p class="hero-sub">I design automated workflows, AI-driven social media systems and CRM integrations that save time and increase performance. Book a call to see a demo.</p>
-          <div class="cta">
-            <button class="btn btn-primary" id="hireBtn">Hire Me</button>
-            <button class="btn btn-ghost" onclick="Calendly.initPopupWidget({url:'https://calendly.com/michaelalteza26/30min'});return false;">Book Appointment</button>
-          </div>
-          <div class="contact-line" style="margin-top:16px;font-size:12px">
-            Contact: 09910716848 •
-            <a href="https://www.linkedin.com/in/michael-alteza-584b73363" target="_blank">LinkedIn</a> •
-            <a href="https://www.facebook.com/profile.php?id=61582102030895" target="_blank">Facebook</a>
-          </div>
-        </div>
-        <div class="canvas-wrap">
-          <spline-viewer url="https://prod.spline.design/tk2hf11OGIG2Yo0D/scene.splinecode" style="width:100%;height:100%;border-radius:10px;display:block;"></spline-viewer>
-        </div>
-      </div>
-
-      <!-- ── WHAT I DO ── -->
-      <section>
-        <div class="section-label">capabilities</div>
-        <h2>What I Do</h2>
-        <div class="cards">
-          <div class="card">
-            <h3>AI Automation</h3>
-            <div class="muted">End-to-end workflow automation (n8n, Zapier), bot creation, data pipelines.</div>
-          </div>
-          <div class="card">
-            <h3>Social Media</h3>
-            <div class="muted">AI content generation, scheduling, engagement bots and analytics.</div>
-          </div>
-          <div class="card">
-            <h3>CRM & Integrations</h3>
-            <div class="muted">CRM setup, lead routing, customer journeys and analytics integration.</div>
-          </div>
-        </div>
-        <div class="marquee">
-          <div class="marquee-inner">
-            <img src="https://cdn-icons-png.flaticon.com/512/5968/5968866.png">
-            <img src="https://cdn-icons-png.flaticon.com/512/873/873107.png">
-            <img src="https://cdn-icons-png.flaticon.com/512/2504/2504923.png">
-            <img src="https://cdn-icons-png.flaticon.com/512/732/732200.png">
-            <img src="https://cdn-icons-png.flaticon.com/512/906/906361.png">
-            <img src="https://logo.svgcdn.com/simple-icons/n8n-dark.png">
-            <img src="https://logo.svgcdn.com/logos/zapier.png">
-            <img src="https://logo.svgcdn.com/logos/airtable.png">
-            <img src="https://logo.clearbit.com/gohighlevel.com">
-          </div>
-          <div class="marquee-inner" aria-hidden="true">
-            <img src="https://cdn-icons-png.flaticon.com/512/5968/5968866.png">
-            <img src="https://cdn-icons-png.flaticon.com/512/873/873107.png">
-            <img src="https://cdn-icons-png.flaticon.com/512/2504/2504923.png">
-            <img src="https://cdn-icons-png.flaticon.com/512/732/732200.png">
-            <img src="https://cdn-icons-png.flaticon.com/512/906/906361.png">
-            <img src="https://logo.svgcdn.com/simple-icons/n8n-dark.png">
-            <img src="https://logo.svgcdn.com/logos/zapier.png">
-            <img src="https://logo.svgcdn.com/logos/airtable.png">
-            <img src="https://logo.clearbit.com/gohighlevel.com">
-          </div>
-        </div>
-      </section>
-
-      <!-- ── SAMPLE WORK ── -->
-      <section id="projects">
-        <div class="section-label">sample work</div>
-        <h2>Sample Work (Mockups)</h2>
-
-        <h3 class="subsection">N8N Automation</h3>
-        <div class="projects">
-          <div class="proj" onclick="openProject('resume')" onmouseenter="previewProject('resume')" onmouseleave="closePreview()">
-            <img src="asset/sample3.jfif" alt="workflow sample">
-            <div class="label">AI Social Media Manager • Social Media Platform Integration</div>
-          </div>
-          <div class="proj" onclick="openProject('marketing')" onmouseenter="previewProject('marketing')" onmouseleave="closePreview()">
-            <img src="asset/sample2.jfif" alt="marketing hub">
-            <div class="label">ARCHTOCULUTURE Multi-Platform Marketing Automation</div>
-          </div>
-          <div class="proj" onclick="openProject('social')" onmouseenter="previewProject('social')" onmouseleave="closePreview()">
-            <img src="asset/sample1.jfif" alt="social manager">
-            <div class="label">AI Social Media Manager • Content + Engagement</div>
-          </div>
-        </div>
-
-        <h3 class="subsection">Make.com Automations</h3>
-        <div class="projects">
-          <div class="proj" onclick="openProject('make1')" onmouseenter="previewProject('make1')" onmouseleave="closePreview()">
-            <img src="asset/make.1.jfif" alt="Lead Creation & Update">
-            <div class="label">Create and Update Leads Pipeline</div>
-          </div>
-          <div class="proj" onclick="openProject('make2')" onmouseenter="previewProject('make2')" onmouseleave="closePreview()">
-            <img src="asset/make.2.jfif" alt="Order">
-            <div class="label">Automate Order Intake, Validation, Enrichment and Error Notification</div>
-          </div>
-          <div class="proj" onclick="openProject('make3')" onmouseenter="previewProject('make3')" onmouseleave="closePreview()">
-            <img src="asset/make.3.jfif" alt="Leads router">
-            <div class="label">Automated Lead Intake, Validation & Routing System</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ── GHL EXPERT SECTION ── -->
-      <div class="ghl-section" id="ghl-expert">
-
-        <div class="ghl-header">
-          <div>
-            <div class="ghl-badge">GHL Expert / Specialist</div>
-            <div class="ghl-title">GoHighLevel <span>Full-Stack</span><br>CRM Implementation</div>
-            <p class="ghl-desc">
-              Beyond just automation — I architect complete GoHighLevel ecosystems from the ground up.
-              Pipeline design, funnel builds, lead routing systems, sub-account management, and AI-powered
-              workflows that turn GHL into a fully autonomous patient/client acquisition machine.
-            </p>
-          </div>
-        </div>
-
-        <!-- Capabilities -->
-        <div class="ghl-caps">
-          <div class="ghl-cap">
-            <div class="ghl-cap-icon">⚡</div>
-            <div class="ghl-cap-title">Pipeline Architecture</div>
-            <div class="ghl-cap-desc">Custom pipeline design, stage logic, opportunity routing and automated stage progression based on lead behavior.</div>
-          </div>
-          <div class="ghl-cap">
-            <div class="ghl-cap-icon">🤖</div>
-            <div class="ghl-cap-title">AI-Powered Workflows</div>
-            <div class="ghl-cap-desc">Webhook-driven automation using n8n + GHL API to score, qualify, and route leads without manual intervention.</div>
-          </div>
-          <div class="ghl-cap">
-            <div class="ghl-cap-icon">📋</div>
-            <div class="ghl-cap-title">Form & Funnel Builds</div>
-            <div class="ghl-cap-desc">High-converting intake forms, landing pages and consultation funnels deeply integrated with CRM pipelines.</div>
-          </div>
-          <div class="ghl-cap">
-            <div class="ghl-cap-icon">📧</div>
-            <div class="ghl-cap-title">Multi-Channel Follow-ups</div>
-            <div class="ghl-cap-desc">Automated email, SMS and voicemail sequences triggered by pipeline stage changes and lead scoring results.</div>
-          </div>
-          <div class="ghl-cap">
-            <div class="ghl-cap-icon">🔗</div>
-            <div class="ghl-cap-title">Third-Party Integrations</div>
-            <div class="ghl-cap-desc">Connecting GHL with Zapier, n8n, Supabase, Calendly, Stripe and custom APIs via webhooks and REST.</div>
-          </div>
-          <div class="ghl-cap">
-            <div class="ghl-cap-icon">📊</div>
-            <div class="ghl-cap-title">Reporting & Analytics</div>
-            <div class="ghl-cap-desc">Custom dashboards, opportunity tracking, lead source attribution and pipeline performance reporting.</div>
-          </div>
-        </div>
-
-        <!-- Case Study -->
-        <div style="padding:0 28px">
-          <h3 class="subsection" style="color:var(--accent-ghl);margin-top:28px;">Live Case Study</h3>
-          <div class="ghl-case">
-            <div class="ghl-case-header">
-              <div class="dot"></div>
-              <span>BEVERLY HILLS LUXURY DENTISTRY — PATIENT ACQUISITION SYSTEM</span>
-            </div>
-            <div class="ghl-case-body">
-
-              <!-- LEFT: flow -->
-              <div class="ghl-case-left">
-                <div class="case-label">Automation Flow</div>
-                <div class="flow-steps">
-                  <div class="flow-step">
-                    <div class="flow-step-num">01</div>
-                    <div class="flow-step-text"><strong>Form Submission</strong> — Patient fills "Luxury Consultation Application" embedded on the clinic site</div>
-                  </div>
-                  <div class="flow-step">
-                    <div class="flow-step-num">02</div>
-                    <div class="flow-step-text"><strong>Zapier Bridge</strong> — GHL triggers Zapier on new lead, which fires a POST to n8n webhook</div>
-                  </div>
-                  <div class="flow-step">
-                    <div class="flow-step-num">03</div>
-                    <div class="flow-step-text"><strong>Data Validation</strong> — n8n validates required fields (email, contact ID, budget) before processing</div>
-                  </div>
-                  <div class="flow-step">
-                    <div class="flow-step-num">04</div>
-                    <div class="flow-step-text"><strong>AI Lead Scoring</strong> — Budget analyzed: <strong style="color:var(--accent-ghl)">$10k+</strong> = VIP, below = Standard</div>
-                  </div>
-                  <div class="flow-step">
-                    <div class="flow-step-num">05</div>
-                    <div class="flow-step-text"><strong>GHL Pipeline Update</strong> — VIP → "Consultation Approved", Standard → "New Application"</div>
-                  </div>
-                  <div class="flow-step">
-                    <div class="flow-step-num">06</div>
-                    <div class="flow-step-text"><strong>Email Notifications</strong> — Team alerted instantly, lead receives confirmation email</div>
-                  </div>
-                  <div class="flow-step">
-                    <div class="flow-step-num">07</div>
-                    <div class="flow-step-text"><strong>Full Logging</strong> — Every execution logged with tier, score, reasoning and timestamps</div>
-                  </div>
-                </div>
-
-                <div style="margin-top:16px">
-                  <div class="case-label">Tech Stack</div>
-                  <div class="tech-tags">
-                    <span class="tech-tag">GoHighLevel API</span>
-                    <span class="tech-tag">n8n</span>
-                    <span class="tech-tag">Zapier</span>
-                    <span class="tech-tag">Supabase</span>
-                    <span class="tech-tag">Render</span>
-                    <span class="tech-tag">SMTP</span>
-                    <span class="tech-tag">REST Webhooks</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- RIGHT: previews -->
-              <div class="ghl-case-right">
-                <div class="case-label">Clinic Website</div>
-                <div class="site-preview">
-                  <div class="site-preview-bar">
-                    <div class="dot-r"></div>
-                    <div class="dot-y"></div>
-                    <div class="dot-g"></div>
-                    <div class="site-preview-url">Beverly Hills Luxury Dentistry</div>
-                  </div>
-                  <!-- SWAP: replace the placeholder div below with: <img src="asset/dental-preview.jpg"> -->
-                  <div class="site-preview-placeholder">
-                    <img src="asset/dental-preview.jpg">
-                </div>
-
-                <div style="margin-top:14px">
-                  <div class="case-label">n8n Workflow</div>
-                  <div class="workflow-preview">
-                    <div class="workflow-preview-bar">
-                      <span>GHL - Patient Acquisition Lead Qualifier</span>
-                      <div class="status">ACTIVE</div>
-                    </div>
-                    <!-- SWAP: replace the placeholder div below with: <img class="workflow-img" src="asset/n8n-workflow.jpg"> -->
-                    <div class="workflow-placeholder">
-                       <img class="workflow-img" src="asset/n8n-workflow.jpg">
-                    </div>
-                  </div>
-                </div>
-
-                <div style="margin-top:14px;padding:12px;border-radius:8px;background:rgba(0,255,136,0.03);border:1px solid rgba(0,255,136,0.08)">
-                  <div class="case-label">Pipeline</div>
-                  <div style="font-size:12px;color:var(--text-dim);line-height:1.7">
-                    <div>📌 <strong style="color:var(--text-bright)">Patient Acquisition</strong></div>
-                    <div style="margin-top:6px;padding-left:12px">
-                      <div>→ <span style="color:var(--accent-ghl)">Consultation Approved</span> <span style="opacity:0.5">(VIP $10k+)</span></div>
-                      <div>→ <span style="color:var(--accent)">New Application</span> <span style="opacity:0.5">(Standard, manual review)</span></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-        <div class="ghl-footer">
-          <div class="ghl-footer-text">
-            Need a complete <strong>GHL ecosystem</strong> built for your business?<br>
-            From pipeline architecture to AI-powered lead routing — fully automated.
-          </div>
-          <button class="btn-ghl" onclick="Calendly.initPopupWidget({url:'https://calendly.com/michaelalteza26/30min'});return false;">
-            Book a GHL Strategy Call →
-          </button>
-        </div>
-
-      </div>
-      <!-- end ghl-section -->
-
-      <!-- ── PROJECT MODAL ── -->
-      <div id="projectPreview" class="preview-card"></div>
-      <div id="projectModal" class="modal-overlay">
-        <div class="modal-content">
-          <button class="modal-close" onclick="closeModal()">×</button>
-          <h3 id="modalTitle"></h3>
-          <p id="modalDescription"></p>
-          <div class="modal-section"><strong>Why it was built</strong><p id="modalWhy"></p></div>
-          <div class="modal-section"><strong>Tools & Stack</strong><p id="modalTools"></p></div>
-          <div class="modal-section"><strong>Automation Flow</strong><ul id="modalFlow"></ul></div>
-        </div>
-      </div>
-
-      <!-- ── SPECIAL FEATURES ── -->
-      <section>
-        <div class="section-label">extras</div>
-        <h2>Special Features</h2>
-        <div class="cards">
-          <div class="card">
-            <h3>Interactive 3D Robot</h3>
-            <div class="muted">Low-poly robot head that follows the cursor and reacts to hover.</div>
-          </div>
-          <div class="card">
-            <h3>Appointment Calendar</h3>
-            <div class="muted">Embed Calendly or Google Calendar to let clients book meetings.</div>
-          </div>
-          <div class="card">
-            <h3>Contact / Lead Capture</h3>
-            <div class="muted">Static site form integrated with Formspree for email forwarding.</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ── CONTACT ── -->
-      <section>
-        <div class="section-label">contact</div>
-        <h2>Contact & Bookings</h2>
-        <div class="contact-grid">
-          <div>
-            <p class="small-muted">Prefer a quick meeting? Click Book Appointment to open the scheduler.</p>
-            <div style="margin-top:12px;background:rgba(0,0,0,0.3);padding:16px;border-radius:10px;border:1px solid var(--border)">
-              <strong style="color:var(--text-bright);font-size:13px">Phone</strong>
-              <div class="muted">09910716848</div>
-              <strong style="margin-top:10px;display:block;color:var(--text-bright);font-size:13px">WhatsApp</strong>
-              <div class="muted">+63 991 071 6848</div>
-              <strong style="margin-top:10px;display:block;color:var(--text-bright);font-size:13px">Social</strong>
-              <div class="muted">
-                <a href="https://www.linkedin.com/in/michael-alteza-584b73363" target="_blank" style="color:var(--accent);text-decoration:none">LinkedIn</a> •
-                <a href="https://www.facebook.com/profile.php?id=61582102030895" target="_blank" style="color:var(--accent);text-decoration:none">Facebook</a>
-              </div>
-            </div>
-            <div style="margin-top:14px">
-              <div id="calendly-embed" style="min-height:360px;border-radius:10px;overflow:hidden;border:1px solid var(--border)"></div>
-            </div>
-          </div>
-          <div>
-            <form id="contactForm" action="https://formspree.io/f/xovrgqaq" method="POST">
-              <input type="text" name="name" placeholder="Your name" required>
-              <input type="email" name="email" placeholder="Your email" required>
-              <input type="text" name="subject" placeholder="Subject">
-              <textarea name="message" placeholder="Message" rows="6" required></textarea>
-              <button class="btn btn-primary" type="submit">Send Message</button>
-              <div class="small-muted" style="margin-top:8px">Messages forwarded via Formspree to your email.</div>
-            </form>
-          </div>
-        </div>
-      </section>
-
-      <footer>© 2025 Michael Alteza — AI Automation & Social Media</footer>
-
-    </main>
+<nav>
+  <div class="nav-logo">M<span>.</span>ALTEZA</div>
+  <div class="nav-links">
+    <a href="#hero">Home</a><a href="#skills">Skills</a><a href="#snake">Play</a>
+    <a href="#work">Work</a><a href="#ghl">GHL</a><a href="#contact">Contact</a>
   </div>
+  <div class="nav-status">AVAILABLE FOR HIRE</div>
+</nav>
 
-  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.0/build/spline-viewer.js"></script>
+<section class="hero" id="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="glitch-name">MICHAEL<br>ALTEZA</div>
+        <div class="hero-role">AI Automation Specialist</div>
+        <div class="typing-wrap" id="typing"></div>
+        <p class="hero-desc">I design automated workflows, AI-driven systems and CRM integrations that eliminate manual work and scale businesses on autopilot.</p>
+        <div class="profile-ring">
+          <div class="profile-img-wrap">
+            <img class="profile-img" src="asset/profile.png" alt="Michael Alteza">
+          </div>
+          <div>
+            <div class="p-name">Michael Alteza</div>
+            <div class="p-tag">// AI · Automation · CRM · GHL</div>
+            <div class="p-contact">📞 09910716848 &nbsp;|&nbsp; <a href="https://www.linkedin.com/in/michael-alteza-584b73363" target="_blank">LinkedIn</a> &nbsp;|&nbsp; <a href="https://www.facebook.com/profile.php?id=61582102030895" target="_blank">Facebook</a></div>
+          </div>
+        </div>
+        <div class="cta-row">
+          <button class="btn btn-pink" id="hireBtn">Hire Me</button>
+          <button class="btn btn-cyan" onclick="Calendly.initPopupWidget({url:'https://calendly.com/michaelalteza26/30min'});return false;">Book a Call</button>
+        </div>
+      </div>
+      <div>
+        <div class="spline-frame">
+          <div class="hc tl"></div><div class="hc tr"></div>
+          <div class="hc bl"></div><div class="hc br"></div>
+          <spline-viewer url="https://prod.spline.design/kZBMqEgDNsxlbfOJ/scene.splinecode" style="width:100%;height:100%;display:block;border-radius:10px"></spline-viewer>
+          <div class="hc-label">UNIT-M1 // ONLINE</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <script>
-    // ── Calendly ──
-    Calendly.initInlineWidget({
-      url: 'https://calendly.com/michaelalteza26/30min',
-      parentElement: document.getElementById('calendly-embed')
-    });
+<section id="skills">
+  <div class="wrap">
+    <div class="sec-tag">capabilities</div>
+    <div class="sec-title">What I <span>Do</span></div>
+    <div class="sec-line"></div>
+    <div class="skills-grid">
+      <div class="skill-card"><div class="s-ico">⚡</div><div class="s-name">AI Automation</div><div class="s-desc">End-to-end workflow automation using n8n and Zapier. Bot creation, data pipelines and intelligent triggers.</div></div>
+      <div class="skill-card"><div class="s-ico">📱</div><div class="s-name">Social Media</div><div class="s-desc">AI content generation, multi-platform scheduling, engagement bots and performance analytics.</div></div>
+      <div class="skill-card"><div class="s-ico">🔗</div><div class="s-name">CRM & Integrations</div><div class="s-desc">CRM setup, lead routing, customer journeys and deep analytics integration across platforms.</div></div>
+      <div class="skill-card"><div class="s-ico">🤖</div><div class="s-name">n8n Specialist</div><div class="s-desc">Complex multi-node workflows, webhook handling, error management and API orchestration.</div></div>
+      <div class="skill-card"><div class="s-ico">🛠️</div><div class="s-name">Make.com Expert</div><div class="s-desc">Visual automation blueprints, multi-step scenarios, data transformation and routing logic.</div></div>
+      <div class="skill-card"><div class="s-ico">🎯</div><div class="s-name">GoHighLevel</div><div class="s-desc">Full GHL ecosystems — pipelines, funnels, sub-accounts, lead scoring and AI routing.</div></div>
+    </div>
+  </div>
+</section>
 
-    // ── Buttons ──
-    document.getElementById('hireBtn').addEventListener('click', () => {
-      document.getElementById('contactForm').scrollIntoView({behavior:'smooth'});
-    });
+<section id="snake">
+  <div class="wrap">
+    <div class="sec-tag">mini game</div>
+    <div class="sec-title">Eat the <span>Stack</span></div>
+    <div class="sec-line"></div>
+    <div class="snake-wrap">
+      <div class="snake-hdr">
+        <div class="snake-ttl">🐍 SKILL COLLECTOR v1.0</div>
+        <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+          <div class="snake-ctrl">Arrow keys to move &nbsp;|&nbsp; SPACE to start/pause</div>
+          <div class="snake-scr">SCORE: <span id="snakeScore">0</span></div>
+        </div>
+      </div>
+      <canvas id="snakeCanvas" width="690" height="345"></canvas>
+      <div class="snake-msg" id="snakeMsg">Press SPACE to start — eat the tech logos to grow! 🐍</div>
+    </div>
+  </div>
+</section>
 
-    // ── Project data ──
-    const projects = {
-      resume: {
-        title: "AI Social Media Manager • Social Media Platform Integration",
-        description: "Automated Social Media Handling system that evaluates audience and delivers structured feedback via different platforms.",
-        why: "Built to eliminate manual resume screening and provide instant candidate insights to recruiters.",
-        tools: "N8N, OpenAI, Social Media Bot API, Google Drive",
-        flow: ["Content uploaded via webhook","Text extracted and cleaned","AI evaluates skills, content type, and gaps","Structured captions generated","Result delivered via Social Media Platform"]
-      },
-      marketing: {
-        title: "Marketing Automation Hub • Multi-Platform",
-        description: "Central automation hub connecting lead sources, CRM, and follow-ups.",
-        why: "To unify fragmented marketing systems into one reliable automation pipeline.",
-        tools: "N8n, Airtable, Zapier, Meta Ads, Webhooks",
-        flow: ["Lead captured from ad or form","Data validated and deduplicated","CRM record created or updated","Automated follow-up triggered","Slack notification sent"]
-      },
-      social: {
-        title: "AI Social Media Manager • Content + Engagement",
-        description: "AI-powered content creation and engagement automation.",
-        why: "Built to scale social media presence without manual posting or replies.",
-        tools: "OpenAI, N8N, Meta API, Scheduler",
-        flow: ["Content brief received","AI generates post variations","Scheduled across platforms","Engagement monitored","Analytics logged"]
-      },
-      make1: {
-        title: "Automated Lead Intake & CRM Pipeline Management",
-        description: "Automatically receives incoming leads, validates data, detects duplicates, and creates or updates CRM pipeline records with full notifications and logging.",
-        why: "To ensure every inbound lead is processed correctly, prevent duplicates, maintain clean CRM data, and alert the team in real time.",
-        tools: "Make.com, Webhooks, Airtable, ClickUp, Slack, Gmail",
-        flow: ["Receive lead data via webhook","Validate and clean incoming lead fields","Search CRM to check if lead already exists","Route logic to create a new lead or update existing record","Update CRM pipeline stage","Create a task in ClickUp for follow-up","Notify team via Slack and email","Log errors and system status"]
-      },
-      make2: {
-        title: "Automated Order Processing with Validation & Error Handling",
-        description: "Processes incoming orders, validates data, detects existing records, updates order status, manages backorders, and alerts stakeholders on success or failure.",
-        why: "To eliminate manual order handling, reduce errors, ensure accurate fulfillment tracking, and immediately surface issues.",
-        tools: "Make.com, Webhooks, Airtable, Slack, Gmail",
-        flow: ["Receive order payload via webhook","Sanitize and normalize order data","Validate required fields and business rules","Search existing records to prevent duplicates","Route orders based on availability and status","Update order or create backorder records","Notify operators via Slack","Send email confirmations or error alerts","Log final status"]
-      },
-      make3: {
-        title: "Automated Lead Intake, Validation & Routing System",
-        description: "Make.com automation that ingests inbound events via webhooks, sanitizes and validates data, routes execution based on event type, and escalates downstream failures with structured error alerts.",
-        why: "Makes logs clearer, helps if you later add monitoring, shows lifecycle thinking.",
-        tools: "Make.com, Webhooks, Airtable, Slack, Gmail, HTTP Request",
-        flow: ["Receive new lead via webhook","Sanitize and normalize data","Separate via type of sources","Set Processing Status","Build a processed payload","Send the lead intake to downstream using HTTP"]
-      }
-    };
+<section id="work">
+  <div class="wrap">
+    <div class="sec-tag">sample work</div>
+    <div class="sec-title">Projects & <span>Mockups</span></div>
+    <div class="sec-line"></div>
+    <div class="sub-lbl n8n-lbl">N8N Automations</div>
+    <div class="proj-grid">
+      <div class="proj-card" onclick="openModal('resume')" onmouseenter="showPrev('resume')" onmouseleave="hidePrev()">
+        <img class="proj-img" src="asset/sample3.jfif" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="proj-ph" style="display:none">🤖</div>
+        <div class="proj-arr">↗</div>
+        <div class="proj-body"><div class="proj-tag">N8N · OpenAI · Social Media</div><div class="proj-name">AI Social Media Manager · Platform Integration</div></div>
+      </div>
+      <div class="proj-card" onclick="openModal('marketing')" onmouseenter="showPrev('marketing')" onmouseleave="hidePrev()">
+        <img class="proj-img" src="asset/sample2.jfif" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="proj-ph" style="display:none">📊</div>
+        <div class="proj-arr">↗</div>
+        <div class="proj-body"><div class="proj-tag">N8N · Airtable · Meta Ads</div><div class="proj-name">ARCHTOCULTURE Multi-Platform Marketing Hub</div></div>
+      </div>
+      <div class="proj-card" onclick="openModal('social')" onmouseenter="showPrev('social')" onmouseleave="hidePrev()">
+        <img class="proj-img" src="asset/sample1.jfif" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="proj-ph" style="display:none">📲</div>
+        <div class="proj-arr">↗</div>
+        <div class="proj-body"><div class="proj-tag">N8N · OpenAI · Meta API</div><div class="proj-name">AI Social Media Manager · Content + Engagement</div></div>
+      </div>
+    </div>
+    <div class="sub-lbl make-lbl" style="margin-top:28px">Make.com Automations</div>
+    <div class="proj-grid">
+      <div class="proj-card" onclick="openModal('make1')" onmouseenter="showPrev('make1')" onmouseleave="hidePrev()">
+        <img class="proj-img" src="asset/make.1.jfif" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="proj-ph" style="display:none">🔄</div>
+        <div class="proj-arr">↗</div>
+        <div class="proj-body"><div class="proj-tag">Make.com · Airtable · ClickUp</div><div class="proj-name">Create and Update Leads Pipeline</div></div>
+      </div>
+      <div class="proj-card" onclick="openModal('make2')" onmouseenter="showPrev('make2')" onmouseleave="hidePrev()">
+        <img class="proj-img" src="asset/make.2.jfif" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="proj-ph" style="display:none">📦</div>
+        <div class="proj-arr">↗</div>
+        <div class="proj-body"><div class="proj-tag">Make.com · Webhooks · Gmail</div><div class="proj-name">Order Intake, Validation & Error Handling</div></div>
+      </div>
+      <div class="proj-card" onclick="openModal('make3')" onmouseenter="showPrev('make3')" onmouseleave="hidePrev()">
+        <img class="proj-img" src="asset/make.3.jfif" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="proj-ph" style="display:none">🎯</div>
+        <div class="proj-arr">↗</div>
+        <div class="proj-body"><div class="proj-tag">Make.com · HTTP · Slack</div><div class="proj-name">Automated Lead Intake, Validation & Routing</div></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    function openProject(key) {
-      const p = projects[key];
-      document.getElementById("modalTitle").innerText = p.title;
-      document.getElementById("modalDescription").innerText = p.description;
-      document.getElementById("modalWhy").innerText = p.why;
-      document.getElementById("modalTools").innerText = p.tools;
-      const flowList = document.getElementById("modalFlow");
-      flowList.innerHTML = "";
-      p.flow.forEach(step => {
-        const li = document.createElement("li");
-        li.textContent = step;
-        li.style.marginBottom = "6px";
-        flowList.appendChild(li);
-      });
-      document.getElementById("projectModal").style.display = "flex";
+<section id="ghl">
+  <div class="wrap">
+    <div class="sec-tag">GHL Expert</div>
+    <div class="sec-title">GoHighLevel <span>Specialist</span></div>
+    <div class="sec-line"></div>
+    <div class="ghl-wrap">
+      <div class="ghl-top">
+        <div class="ghl-badge">GHL Full-Stack Expert</div>
+        <div class="ghl-h">Complete <span>CRM Ecosystems</span> Built from Scratch</div>
+        <p class="ghl-p">Beyond automation — I architect entire GoHighLevel environments. Pipeline design, AI-powered lead routing, funnel builds, sub-account management, and webhook-driven workflows that make GHL run on autopilot.</p>
+      </div>
+      <div class="ghl-caps">
+        <div class="ghl-cap"><div class="gc-ico">⚡</div><div class="gc-t">Pipeline Architecture</div><div class="gc-d">Custom stages, opportunity routing and automated stage progression based on lead behavior.</div></div>
+        <div class="ghl-cap"><div class="gc-ico">🤖</div><div class="gc-t">AI-Powered Workflows</div><div class="gc-d">n8n + GHL API to score, qualify and route leads without any manual work.</div></div>
+        <div class="ghl-cap"><div class="gc-ico">📋</div><div class="gc-t">Form & Funnel Builds</div><div class="gc-d">High-converting intake forms and consultation funnels integrated with pipelines.</div></div>
+        <div class="ghl-cap"><div class="gc-ico">📧</div><div class="gc-t">Multi-Channel Follow-ups</div><div class="gc-d">Email, SMS and voicemail sequences triggered by stage changes and lead scoring.</div></div>
+        <div class="ghl-cap"><div class="gc-ico">🔗</div><div class="gc-t">Third-Party Integrations</div><div class="gc-d">Connecting GHL with Zapier, n8n, Supabase, Calendly and custom APIs.</div></div>
+        <div class="ghl-cap"><div class="gc-ico">📊</div><div class="gc-t">Reporting & Analytics</div><div class="gc-d">Custom dashboards, lead attribution and pipeline performance reporting.</div></div>
+      </div>
+      <div style="padding:0 30px">
+        <div style="font-family:var(--font-mono);font-size:9px;color:var(--green);letter-spacing:0.2em;text-transform:uppercase;margin:22px 0 11px">> Live Case Study</div>
+        <div class="case-box">
+          <div class="case-bar"><div class="dot"></div><span>BEVERLY HILLS LUXURY DENTISTRY — PATIENT ACQUISITION SYSTEM</span></div>
+          <div class="case-cols">
+            <div class="case-col">
+              <div class="c-lbl">Automation Flow</div>
+              <div class="flow-list">
+                <div class="fi"><div class="fi-n">01</div><div class="fi-t"><strong>Form Submission</strong> — Patient fills Luxury Consultation Application</div></div>
+                <div class="fi"><div class="fi-n">02</div><div class="fi-t"><strong>Zapier Bridge</strong> — GHL triggers Zapier → fires POST to n8n webhook</div></div>
+                <div class="fi"><div class="fi-n">03</div><div class="fi-t"><strong>Data Validation</strong> — n8n validates email, contact ID and budget</div></div>
+                <div class="fi"><div class="fi-n">04</div><div class="fi-t"><strong>AI Scoring</strong> — <strong style="color:var(--green)">$10k+</strong> = VIP auto-approved, below = manual review</div></div>
+                <div class="fi"><div class="fi-n">05</div><div class="fi-t"><strong>GHL Update</strong> — VIP → Consultation Approved, Standard → New Application</div></div>
+                <div class="fi"><div class="fi-n">06</div><div class="fi-t"><strong>Notifications</strong> — Team alerted, lead gets confirmation email</div></div>
+                <div class="fi"><div class="fi-n">07</div><div class="fi-t"><strong>Full Logging</strong> — Every execution logged with tier, score and timestamps</div></div>
+              </div>
+              <div class="ttags" style="margin-top:14px"><span class="ttag">GHL API</span><span class="ttag">n8n</span><span class="ttag">Zapier</span><span class="ttag">Supabase</span><span class="ttag">Render</span><span class="ttag">SMTP</span><span class="ttag">REST</span></div>
+            </div>
+            <div class="case-col">
+              <div class="c-lbl">Clinic Website</div>
+              <div class="prev-box">
+                <div class="prev-bar"><div class="dr"></div><div class="dy"></div><div class="dg"></div><div class="prev-url">Beverly Hills Luxury Dentistry</div></div>
+                <div class="prev-ph"><span style="font-size:26px">🦷</span><span>asset/dental-preview.jpg</span><span style="font-size:9px;opacity:0.4">Replace with screenshot</span></div>
+              </div>
+              <div style="margin-top:12px">
+                <div class="c-lbl">n8n Workflow</div>
+                <div class="prev-box">
+                  <div class="wf-bar2"><div class="wf-n">Patient Acquisition Lead Qualifier</div><div class="wf-live">ACTIVE</div></div>
+                  <div class="prev-ph"><span style="font-size:22px">⚙️</span><span>asset/n8n-workflow.jpg</span><span style="font-size:9px;opacity:0.4">Replace with screenshot</span></div>
+                </div>
+              </div>
+              <div class="pip-box">
+                <div class="c-lbl">Pipeline Stages</div>
+                <div class="pip-row"><div class="dot-g"></div><strong style="color:var(--text)">Consultation Approved</strong>&nbsp;<span style="opacity:0.45">VIP $10k+</span></div>
+                <div class="pip-row" style="margin-top:5px"><div class="dot-b"></div><strong style="color:var(--text)">New Application</strong>&nbsp;<span style="opacity:0.45">Manual review</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ghl-footer">
+        <p>Need a complete <strong>GHL ecosystem</strong> built for your business?<br>Pipelines, funnels, AI routing — fully automated from day one.</p>
+        <button class="btn-green" onclick="Calendly.initPopupWidget({url:'https://calendly.com/michaelalteza26/30min'});return false;">Book a GHL Strategy Call →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="sec-tag">get in touch</div>
+    <div class="sec-title">Let's <span>Connect</span></div>
+    <div class="sec-line"></div>
+    <div class="contact-grid">
+      <div>
+        <div class="cinfo">
+          <div class="crow"><div class="c-ico">📞</div><div><div class="c-lbl2">Phone</div><div class="c-val">09910716848</div></div></div>
+          <div class="crow"><div class="c-ico">💬</div><div><div class="c-lbl2">WhatsApp</div><div class="c-val">+63 991 071 6848</div></div></div>
+          <div class="crow"><div class="c-ico">💼</div><div><div class="c-lbl2">LinkedIn</div><div class="c-val"><a href="https://www.linkedin.com/in/michael-alteza-584b73363" target="_blank">michael-alteza</a></div></div></div>
+          <div class="crow"><div class="c-ico">📘</div><div><div class="c-lbl2">Facebook</div><div class="c-val"><a href="https://www.facebook.com/profile.php?id=61582102030895" target="_blank">Michael Alteza</a></div></div></div>
+        </div>
+        <div class="cal-wrap"><div id="calendly-embed" style="min-height:300px"></div></div>
+      </div>
+      <div class="form-box">
+        <form id="contactForm" action="https://formspree.io/f/xovrgqaq" method="POST">
+          <input type="text" name="name" placeholder="Your name" required>
+          <input type="email" name="email" placeholder="Your email" required>
+          <input type="text" name="subject" placeholder="Subject">
+          <textarea name="message" placeholder="Message..." rows="6" required></textarea>
+          <button class="btn btn-cyan" type="submit" style="width:100%;cursor:none">Send Message</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap">© 2025 <span>Michael Alteza</span> — AI Automation Specialist &nbsp;|&nbsp; Built with ⚡ and lots of caffeine</div></footer>
+
+<div id="modal" class="modal-overlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h3 id="m-title"></h3><p id="m-desc"></p>
+    <div class="m-sec"><strong>Why</strong><p id="m-why"></p></div>
+    <div class="m-sec"><strong>Tools</strong><p id="m-tools"></p></div>
+    <div class="m-sec"><strong>Flow</strong><ul id="m-flow" style="padding-left:16px"></ul></div>
+  </div>
+</div>
+<div id="hoverPrev" class="hover-prev"></div>
+
+<script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.0/build/spline-viewer.js"></script>
+<script>
+// CURSOR
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+document.addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px'});
+document.addEventListener('mousedown',()=>cur.style.transform='translate(-50%,-50%) scale(0.5)');
+document.addEventListener('mouseup',()=>cur.style.transform='translate(-50%,-50%) scale(1)');
+
+// MATRIX
+(()=>{
+  const c=document.getElementById('matrix-canvas'),ctx=c.getContext('2d');
+  c.width=window.innerWidth;c.height=window.innerHeight;
+  window.addEventListener('resize',()=>{c.width=window.innerWidth;c.height=window.innerHeight});
+  const ch='アイウエオカキクケコ0123456789ABCDEF{}[]<>';
+  const fs=13,cols=Math.floor(c.width/fs),drops=[];
+  for(let i=0;i<cols;i++)drops[i]=Math.random()*-100;
+  setInterval(()=>{
+    ctx.fillStyle='rgba(2,4,8,0.05)';ctx.fillRect(0,0,c.width,c.height);
+    ctx.fillStyle='#00ffe7';ctx.font=fs+'px Share Tech Mono';
+    for(let i=0;i<drops.length;i++){ctx.fillText(ch[Math.floor(Math.random()*ch.length)],i*fs,drops[i]*fs);if(drops[i]*fs>c.height&&Math.random()>.975)drops[i]=0;drops[i]++}
+  },35);
+})();
+
+// TYPING
+const phrases=['n8n Workflow Architect','Make.com Specialist','GHL CRM Expert','AI Lead Qualification','Automation Engineer','CRM Integration Wizard'];
+let pi=0,ci=0,del=false;
+const typEl=document.getElementById('typing');
+function type(){
+  const p=phrases[pi];
+  if(!del){typEl.textContent=p.slice(0,ci+1);ci++;if(ci===p.length){del=true;setTimeout(type,1800);return}}
+  else{typEl.textContent=p.slice(0,ci-1);ci--;if(ci===0){del=false;pi=(pi+1)%phrases.length}}
+  setTimeout(type,del?55:85);
+}
+type();
+
+// SNAKE
+(()=>{
+  const canvas=document.getElementById('snakeCanvas'),ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height,C=23,COLS=Math.floor(W/C),ROWS=Math.floor(H/C);
+  const LOGOS=[{e:'⚡',n:'n8n'},{e:'🔗',n:'Zapier'},{e:'📊',n:'Airtable'},{e:'🤖',n:'GHL'},{e:'📧',n:'Gmail'},{e:'🔷',n:'Make'},{e:'☁️',n:'Render'},{e:'🗄️',n:'Supabase'},{e:'🌐',n:'Webhook'},{e:'🐍',n:'Python'}];
+  let snake,dir,food,score,running,dead;
+  function init(){snake=[{x:10,y:7},{x:9,y:7},{x:8,y:7}];dir={x:1,y:0};score=0;running=false;dead=false;document.getElementById('snakeScore').textContent='0';spawnFood();draw()}
+  function spawnFood(){let p;do{p={x:Math.floor(Math.random()*COLS),y:Math.floor(Math.random()*ROWS)}}while(snake.some(s=>s.x===p.x&&s.y===p.y));food={...p,...LOGOS[Math.floor(Math.random()*LOGOS.length)]}}
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle='rgba(0,255,231,0.03)';ctx.lineWidth=0.5;
+    for(let x=0;x<=COLS;x++){ctx.beginPath();ctx.moveTo(x*C,0);ctx.lineTo(x*C,H);ctx.stroke()}
+    for(let y=0;y<=ROWS;y++){ctx.beginPath();ctx.moveTo(0,y*C);ctx.lineTo(W,y*C);ctx.stroke()}
+    ctx.font=(C-3)+'px serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.shadowColor='rgba(0,255,231,0.9)';ctx.shadowBlur=14;
+    ctx.fillText(food.e,food.x*C+C/2,food.y*C+C/2);ctx.shadowBlur=0;
+    snake.forEach((s,i)=>{const a=1-i/snake.length*0.55;ctx.shadowBlur=i===0?16:3;ctx.shadowColor='rgba(0,255,231,0.8)';ctx.fillStyle=`rgba(${i===0?'0,255,231':'0,180,160'},${a})`;ctx.fillRect(s.x*C+2,s.y*C+2,C-4,C-4);ctx.shadowBlur=0});
+    if(!running&&!dead){ctx.fillStyle='rgba(2,4,8,0.75)';ctx.fillRect(0,0,W,H);ctx.font='bold 15px Orbitron';ctx.fillStyle='#00ffe7';ctx.textAlign='center';ctx.textBaseline='middle';ctx.shadowColor='rgba(0,255,231,0.8)';ctx.shadowBlur=20;ctx.fillText('PRESS SPACE TO START',W/2,H/2);ctx.shadowBlur=0}
+    if(dead){ctx.fillStyle='rgba(2,4,8,0.88)';ctx.fillRect(0,0,W,H);ctx.font='bold 20px Orbitron';ctx.fillStyle='#ff2d78';ctx.textAlign='center';ctx.textBaseline='middle';ctx.shadowColor='rgba(255,45,120,0.8)';ctx.shadowBlur=20;ctx.fillText('GAME OVER',W/2,H/2-18);ctx.shadowBlur=0;ctx.font='12px Share Tech Mono';ctx.fillStyle='#00ffe7';ctx.fillText('Score: '+score+'  |  SPACE to restart',W/2,H/2+16)}
+  }
+  let lt=0;
+  function loop(ts){
+    if(!running)return;
+    if(ts-lt>130){lt=ts;
+      const h={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
+      if(h.x<0||h.x>=COLS||h.y<0||h.y>=ROWS||snake.some(s=>s.x===h.x&&s.y===h.y)){running=false;dead=true;draw();return}
+      snake.unshift(h);
+      if(h.x===food.x&&h.y===food.y){score+=10;document.getElementById('snakeScore').textContent=score;const msg=document.getElementById('snakeMsg');msg.textContent='+'+food.n+' skill unlocked! 🚀';setTimeout(()=>msg.textContent='',1500);spawnFood()}else snake.pop();
+      draw();
     }
+    requestAnimationFrame(loop);
+  }
+  document.addEventListener('keydown',e=>{
+    if(e.code==='Space'){e.preventDefault();if(dead){init();return}if(!running){running=true;requestAnimationFrame(loop)}else{running=!running;if(running)requestAnimationFrame(loop)}}
+    if(e.key==='ArrowUp'&&dir.y===0)dir={x:0,y:-1};
+    if(e.key==='ArrowDown'&&dir.y===0)dir={x:0,y:1};
+    if(e.key==='ArrowLeft'&&dir.x===0)dir={x:-1,y:0};
+    if(e.key==='ArrowRight'&&dir.x===0)dir={x:1,y:0};
+  });
+  init();
+})();
 
-    function closeModal() {
-      document.getElementById("projectModal").style.display = "none";
-    }
+// CALENDLY
+document.addEventListener('DOMContentLoaded',()=>{
+  if(typeof Calendly!=='undefined')Calendly.initInlineWidget({url:'https://calendly.com/michaelalteza26/30min',parentElement:document.getElementById('calendly-embed')});
+});
 
-    function previewProject(key) {
-      const p = projects[key];
-      const preview = document.getElementById("projectPreview");
-      preview.innerHTML = `<h4>${p.title}</h4><p>${p.description}</p><p style="margin-top:6px"><strong style="color:var(--accent)">Tools:</strong> ${p.tools}</p>`;
-      preview.style.display = "block";
-    }
+document.getElementById('hireBtn').addEventListener('click',()=>document.getElementById('contactForm').scrollIntoView({behavior:'smooth'}));
 
-    function closePreview() {
-      document.getElementById("projectPreview").style.display = "none";
-    }
+const projects={
+  resume:{title:"AI Social Media Manager · Platform Integration",description:"Automated social media system that evaluates audience and delivers structured feedback via different platforms.",why:"To eliminate manual social media work and provide instant AI-generated content at scale.",tools:"N8N, OpenAI, Social Media Bot API, Google Drive",flow:["Content uploaded via webhook","Text extracted and cleaned","AI evaluates content type and gaps","Structured captions generated","Result delivered via Social Media Platform"]},
+  marketing:{title:"ARCHTOCULTURE Multi-Platform Marketing Hub",description:"Central automation hub connecting lead sources, CRM, and follow-ups across multiple platforms.",why:"To unify fragmented marketing systems into one reliable pipeline.",tools:"N8n, Airtable, Zapier, Meta Ads, Webhooks",flow:["Lead captured from ad or form","Data validated and deduplicated","CRM record created or updated","Automated follow-up triggered","Slack notification sent"]},
+  social:{title:"AI Social Media Manager · Content + Engagement",description:"AI-powered content creation and engagement automation system.",why:"Built to scale social media presence without manual posting or replies.",tools:"OpenAI, N8N, Meta API, Scheduler",flow:["Content brief received","AI generates post variations","Scheduled across platforms","Engagement monitored","Analytics logged"]},
+  make1:{title:"Automated Lead Intake & CRM Pipeline Management",description:"Automatically receives leads, validates data, detects duplicates, and creates or updates CRM records.",why:"To ensure every inbound lead is processed correctly and the team is alerted in real time.",tools:"Make.com, Webhooks, Airtable, ClickUp, Slack, Gmail",flow:["Receive lead data via webhook","Validate and clean fields","Search CRM for existing record","Create or update record","Update pipeline stage","Create ClickUp task","Notify team","Log errors"]},
+  make2:{title:"Automated Order Processing with Error Handling",description:"Processes incoming orders, validates data, manages backorders, and alerts stakeholders.",why:"To eliminate manual order handling and surface issues before they impact customers.",tools:"Make.com, Webhooks, Airtable, Slack, Gmail",flow:["Receive order payload","Sanitize data","Validate fields","Check duplicates","Route by availability","Update/create backorder","Notify via Slack","Send email","Log status"]},
+  make3:{title:"Automated Lead Intake, Validation & Routing",description:"Ingests webhook events, sanitizes data, routes by event type, and escalates failures with error alerts.",why:"Cleaner logs, easier monitoring, shows full lifecycle thinking.",tools:"Make.com, Webhooks, Airtable, Slack, Gmail, HTTP",flow:["Receive lead via webhook","Sanitize data","Separate by source","Set Processing Status","Build payload","Send to downstream via HTTP"]}
+};
 
-    document.addEventListener("mousemove", e => {
-      const preview = document.getElementById("projectPreview");
-      if (preview.style.display === "block") {
-        preview.style.left = e.clientX + 20 + "px";
-        preview.style.top = e.clientY + 20 + "px";
-      }
-    });
-  </script>
+function openModal(k){
+  const p=projects[k];
+  document.getElementById('m-title').textContent=p.title;
+  document.getElementById('m-desc').textContent=p.description;
+  document.getElementById('m-why').textContent=p.why;
+  document.getElementById('m-tools').textContent=p.tools;
+  const fl=document.getElementById('m-flow');fl.innerHTML='';
+  p.flow.forEach(s=>{const li=document.createElement('li');li.textContent=s;li.style.marginBottom='4px';fl.appendChild(li)});
+  document.getElementById('modal').style.display='flex';
+}
+function closeModal(){document.getElementById('modal').style.display='none'}
+function showPrev(k){
+  const p=projects[k],el=document.getElementById('hoverPrev');
+  el.innerHTML=`<h4>${p.title}</h4><p>${p.description}</p><p style="margin-top:5px;color:#00ffe7;font-size:9px">${p.tools}</p>`;
+  el.style.display='block';
+}
+function hidePrev(){document.getElementById('hoverPrev').style.display='none'}
+document.addEventListener('mousemove',e=>{
+  const el=document.getElementById('hoverPrev');
+  if(el.style.display==='block'){el.style.left=(e.clientX+18)+'px';el.style.top=(e.clientY+18)+'px'}
+});
+</script>
 </body>
 </html>
