@@ -11,7 +11,7 @@
 <style>
 :root{
   --bg:#020408;--cyan:#00ffe7;--pink:#ff2d78;--yellow:#ffe600;
-  --green:#00ff88;--text:#c8f0ff;--dim:#3a6070;
+  --green:#00ff88;--text:#c8f0ff;--dim:#8ab4c8;
   --font-hud:'Orbitron',monospace;--font-mono:'Share Tech Mono',monospace;--font-body:'Rajdhani',sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -41,7 +41,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 60px;display:fl
 .typing-wrap{font-family:var(--font-mono);font-size:13px;color:var(--text);margin-top:18px;min-height:22px}
 .typing-wrap::after{content:'█';animation:blink .7s step-end infinite;color:var(--cyan)}
 @keyframes blink{50%{opacity:0}}
-.hero-desc{font-size:14px;color:rgba(200,240,255,0.55);line-height:1.7;margin-top:14px}
+.hero-desc{font-size:15px;color:rgba(200,240,255,0.85);line-height:1.7;margin-top:14px}
 .profile-ring{display:flex;align-items:center;gap:16px;margin-top:26px}
 .profile-img-wrap{position:relative;width:70px;height:70px;flex-shrink:0}
 .profile-img-wrap::before{content:'';position:absolute;inset:-3px;border-radius:50%;background:conic-gradient(var(--cyan),var(--pink),var(--yellow),var(--cyan));animation:spin 3s linear infinite;z-index:0}
