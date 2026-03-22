@@ -5,233 +5,495 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Michael Alteza — AI Automation & Social Media</title>
   <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
   <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
-<script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+  <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
 
   <style>
-    /* Basic reset */
-    *{box-sizing:border-box;margin:0;padding:0}
-    html,body,#app{height:100%}
-    body{font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;color:#cfe8ff;overflow-y:auto;
-  background-image:url('asset/background.jpg'); /* your image here */
-    background-size:cover;       /* make it fill the screen */
-    background-repeat: no-repeat; /* no repeat */
-    background-attachment: fixed; /* this makes it stay while scrolling */
-    background-position: center;  /* keep image centered */}
+    :root {
+      --bg: #020a10;
+      --surface: rgba(255,255,255,0.02);
+      --border: rgba(0,200,255,0.08);
+      --border-bright: rgba(0,200,255,0.25);
+      --text: #c8e8f8;
+      --text-dim: #5a8fa8;
+      --text-bright: #e8f7ff;
+      --accent: #00c8ff;
+      --accent2: #0066ff;
+      --accent-ghl: #00ff88;
+      --accent-ghl-dim: rgba(0,255,136,0.08);
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-display: 'Syne', sans-serif;
+    }
 
-    /* Background grid + glow */
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;scroll-behavior:smooth}
+    body{
+      font-family: var(--font-mono);
+      color: var(--text);
+      overflow-y:auto;
+      background: var(--bg);
+      background-image: url('asset/background.jpg');
+      background-size:cover;
+      background-repeat:no-repeat;
+      background-attachment:fixed;
+      background-position:center;
+    }
+
+    /* ── SCANLINE OVERLAY ── */
+    body::before {
+      content:'';
+      position:fixed;inset:0;z-index:0;pointer-events:none;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+      animation: scanlines 8s linear infinite;
+    }
+    @keyframes scanlines { from{background-position:0 0} to{background-position:0 100px} }
+
+    /* ── GRID + GLOW ── */
     .bg-grid{
-      position:fixed;inset:0;z-index:-2;pointer-events:none;background:
-        radial-gradient(ellipse at center, rgba(255,255,255,0.02) 0%, rgba(0,0,0,0) 50%),
-        linear-gradient(180deg, rgba(10,15,25,0.5), rgba(3,6,10,0.6));
+      position:fixed;inset:0;z-index:-1;pointer-events:none;
+      background: radial-gradient(ellipse at 20% 50%, rgba(0,100,255,0.04) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 20%, rgba(0,200,255,0.03) 0%, transparent 50%),
+                  linear-gradient(180deg, rgba(2,10,16,0.7), rgba(2,10,16,0.85));
+    }
+    .neon-lines{
+      position:absolute;inset:0;opacity:.2;
+      background-image:
+        repeating-linear-gradient(0deg, rgba(0,200,255,0.04) 0 1px, transparent 1px 60px),
+        repeating-linear-gradient(90deg, rgba(0,100,255,0.03) 0 1px, transparent 1px 60px);
+    }
+
+    /* ── LAYOUT ── */
+    .container{max-width:1100px;margin:0 auto;padding:40px 30px;position:relative;z-index:1}
+
+    /* ── HEADER ── */
+    header{display:flex;align-items:center;justify-content:space-between;padding:10px 0 20px}
+    .brand{display:flex;gap:14px;align-items:center}
+    .logo{
+      width:48px;height:48px;border-radius:10px;
+      background:linear-gradient(135deg,rgba(0,200,255,0.15),rgba(0,50,255,0.08));
+      display:flex;align-items:center;justify-content:center;
+      border:1px solid var(--border-bright);
+      box-shadow: 0 0 20px rgba(0,200,255,0.1);
+    }
+    .brand-name{font-family:var(--font-display);font-size:20px;font-weight:800;color:var(--text-bright)}
+    .brand-sub{color:var(--text-dim);font-size:11px;margin-top:2px;letter-spacing:0.05em}
+    nav a{color:var(--text-dim);text-decoration:none;font-size:12px;letter-spacing:0.1em;transition:color .2s}
+    nav a:hover{color:var(--accent)}
+
+    /* ── TERMINAL TAG ── */
+    .terminal-tag{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 14px;border-radius:4px;
+      background: rgba(0,200,255,0.05);
+      border:1px solid rgba(0,200,255,0.15);
+      color:var(--accent);font-size:11px;font-weight:600;letter-spacing:0.1em;
+    }
+    .terminal-tag::before{content:'>';color:var(--accent);margin-right:2px}
+    .blink{animation:blink 1s step-end infinite}
+    @keyframes blink{50%{opacity:0}}
+
+    /* ── HERO ── */
+    .hero{display:grid;grid-template-columns:1fr 460px;gap:30px;align-items:center;margin-top:36px}
+    .hero-left{padding:22px 22px 22px 0}
+    .hero-title{font-family:var(--font-display);font-size:40px;font-weight:800;color:var(--text-bright);line-height:1.1;margin-top:14px}
+    .hero-title span{color:var(--accent)}
+    .hero-sub{color:var(--text-dim);margin-top:14px;font-size:13px;line-height:1.7;font-family:var(--font-mono)}
+    .cta{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}
+    .btn{padding:11px 20px;border-radius:6px;cursor:pointer;font-weight:700;font-size:13px;font-family:var(--font-mono);transition:all .2s;border:none}
+    .btn-primary{
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      color:#020a10;
+      box-shadow:0 0 20px rgba(0,200,255,0.2);
+    }
+    .btn-primary:hover{box-shadow:0 0 30px rgba(0,200,255,0.4);transform:translateY(-1px)}
+    .btn-ghost{
+      background:transparent;color:var(--text);
+      border:1px solid var(--border-bright);
+    }
+    .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+    .contact-line{margin-top:18px;color:var(--text-dim);font-size:12px}
+    .contact-line a{color:var(--accent);text-decoration:none}
+    .contact-line a:hover{text-decoration:underline}
+
+    /* ── CANVAS ── */
+    .canvas-wrap{
+      width:100%;height:420px;
+      background:linear-gradient(180deg,rgba(0,20,40,0.5),rgba(0,10,20,0.7));
+      border-radius:12px;padding:8px;
+      border:1px solid var(--border);
+      box-shadow: inset 0 0 40px rgba(0,200,255,0.03), 0 0 40px rgba(0,0,0,0.4);
+    }
+
+    /* ── SECTIONS ── */
+    section{
+      margin-top:50px;padding:28px;
+      background: var(--surface);
+      border-radius:12px;
+      border:1px solid var(--border);
+      position:relative;overflow:hidden;
+    }
+    section::before{
+      content:'';position:absolute;top:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent,var(--accent),transparent);
+      opacity:0.3;
+    }
+    .section-label{
+      font-size:10px;letter-spacing:0.2em;color:var(--accent);
+      text-transform:uppercase;margin-bottom:10px;
+      font-weight:600;
+    }
+    .section-label::before{content:'// '}
+    h2{font-family:var(--font-display);font-size:22px;font-weight:800;color:var(--text-bright);margin-bottom:16px}
+    h3.subsection{
+      font-size:12px;letter-spacing:0.15em;color:var(--accent);
+      text-transform:uppercase;margin:24px 0 12px;
+      font-weight:600;
+    }
+    h3.subsection::before{content:'> '}
+
+    /* ── CARDS ── */
+    .cards{display:flex;gap:16px;flex-wrap:wrap}
+    .card{
+      flex:1;min-width:200px;padding:18px;border-radius:10px;
+      background:rgba(0,200,255,0.02);
+      border:1px solid var(--border);
+      transition:border-color .2s, box-shadow .2s;
+    }
+    .card:hover{border-color:var(--border-bright);box-shadow:0 0 20px rgba(0,200,255,0.05)}
+    .card h3{color:var(--text-bright);margin-bottom:8px;font-size:14px;font-family:var(--font-display)}
+    .muted{color:var(--text-dim);font-size:13px;line-height:1.6}
+
+    /* ── MARQUEE ── */
+    .marquee{
+      background:rgba(0,0,0,0.3);width:100%;overflow:hidden;
+      white-space:nowrap;margin:28px 0 0;
+      border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+      padding:10px 0;
+    }
+    .marquee-inner{display:inline-block;animation:scroll 20s linear infinite}
+    .marquee img{height:36px;margin:0 22px;opacity:0.6;filter:grayscale(1) brightness(2);transition:opacity .2s}
+    .marquee img:hover{opacity:1}
+    @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+
+    /* ── PROJECTS ── */
+    .projects{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .proj{
+      background:rgba(0,10,20,0.6);border-radius:10px;padding:10px;
+      min-height:140px;border:1px solid var(--border);
+      cursor:pointer;transition:transform .25s,box-shadow .25s,border-color .25s;
       overflow:hidden;
     }
-    .neon-lines{position:absolute;inset:0;opacity:.35;filter:blur(12px);background-image:repeating-linear-gradient(0deg, rgba(20,110,255,0.06) 0 1px, transparent 1px 40px), repeating-linear-gradient(90deg, rgba(15,180,255,0.03) 0 1px, transparent 1px 40px)}
+    .proj img{width:100%;height:120px;object-fit:cover;border-radius:7px;transition:transform .3s}
+    .proj:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,200,255,0.1);border-color:var(--border-bright)}
+    .proj:hover img{transform:scale(1.06)}
+    .proj .label{margin-top:8px;color:var(--text-bright);font-weight:700;font-size:12px}
 
-    .container{max-width:1100px;margin:40px auto;padding:30px}
-    header{display:flex;align-items:center;justify-content:space-between}
-    .brand{display:flex;gap:12px;align-items:center}
-    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#0ea5ff33,#004bff11);display:flex;align-items:center;justify-content:center;border:1px solid rgba(14,165,255,.12)}
-    h1{font-size:22px;color:#e8f7ff}
-    p.lead{color:#95c7ff;margin-top:6px}
+    /* ── GHL EXPERT SECTION ── */
+    .ghl-section{
+      margin-top:50px;padding:0;
+      border-radius:14px;
+      border:1px solid rgba(0,255,136,0.15);
+      background: linear-gradient(180deg, rgba(0,255,136,0.02), rgba(0,20,40,0.6));
+      overflow:hidden;position:relative;
+    }
+    .ghl-section::before{
+      content:'';position:absolute;top:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent,var(--accent-ghl),transparent);
+    }
+    .ghl-section::after{
+      content:'';position:absolute;
+      width:400px;height:400px;border-radius:50%;
+      background:radial-gradient(circle,rgba(0,255,136,0.04),transparent 70%);
+      top:-100px;right:-100px;pointer-events:none;
+    }
+    .ghl-header{
+      padding:28px 28px 0;
+      display:flex;align-items:flex-start;justify-content:space-between;gap:20px;
+      flex-wrap:wrap;
+    }
+    .ghl-badge{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:5px 12px;border-radius:4px;
+      background:rgba(0,255,136,0.08);
+      border:1px solid rgba(0,255,136,0.2);
+      color:var(--accent-ghl);font-size:10px;font-weight:700;letter-spacing:0.15em;
+      text-transform:uppercase;margin-bottom:10px;
+    }
+    .ghl-badge::before{content:'●';font-size:8px;animation:blink 1.5s step-end infinite}
+    .ghl-title{
+      font-family:var(--font-display);font-size:26px;font-weight:800;
+      color:var(--text-bright);line-height:1.2;
+    }
+    .ghl-title span{color:var(--accent-ghl)}
+    .ghl-desc{color:var(--text-dim);font-size:13px;line-height:1.7;margin-top:10px;max-width:600px}
 
-    .hero{display:grid;grid-template-columns:1fr 480px;gap:30px;align-items:center;margin-top:36px}
-    .hero .left{padding:22px}
-    .eyebrow{display:inline-block;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,#04293a,#082e3f);color:#7fd0ff;font-weight:600;font-size:12px}
-    .title{font-size:38px;color:#dff6ff;margin-top:12px}
-    .subtitle{color:#9fcfff;margin-top:12px;font-size:16px;line-height:1.4}
-    .cta{display:flex;gap:12px;margin-top:18px}
-    .btn{padding:12px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);cursor:pointer;font-weight:700}
-    .btn-primary{background:linear-gradient(90deg,#02a9ff,#0066ff);color:#071026;box-shadow:0 6px 24px rgba(2,122,255,.12)}
-    .btn-ghost{background:transparent;color:#bfe7ff;border:1px solid rgba(191,231,255,0.06)}
+    /* GHL capabilities grid */
+    .ghl-caps{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+      padding:24px 28px 0;
+    }
+    .ghl-cap{
+      padding:16px;border-radius:8px;
+      background:rgba(0,255,136,0.03);
+      border:1px solid rgba(0,255,136,0.08);
+      transition:all .2s;
+    }
+    .ghl-cap:hover{
+      background:rgba(0,255,136,0.06);
+      border-color:rgba(0,255,136,0.2);
+      transform:translateY(-2px);
+    }
+    .ghl-cap-icon{font-size:18px;margin-bottom:8px}
+    .ghl-cap-title{
+      font-size:12px;font-weight:700;color:var(--accent-ghl);
+      letter-spacing:0.05em;margin-bottom:6px;
+      font-family:var(--font-display);
+    }
+    .ghl-cap-desc{color:var(--text-dim);font-size:11px;line-height:1.6}
 
-    /* right panel (3D) */
-    .canvas-wrap{width:100%;height:420px;background:linear-gradient(180deg, rgba(10,16,25,.4), rgba(5,8,12,.6));border-radius:14px;padding:10px;border:1px solid rgba(255,255,255,0.03);box-shadow:inset 0 0 40px rgba(0,120,255,0.02)}
+    /* GHL case study */
+    .ghl-case{
+      margin:24px 28px 0;
+      border:1px solid rgba(0,255,136,0.1);
+      border-radius:10px;overflow:hidden;
+      background:rgba(0,0,0,0.3);
+    }
+    .ghl-case-header{
+      padding:14px 18px;
+      background:rgba(0,255,136,0.05);
+      border-bottom:1px solid rgba(0,255,136,0.1);
+      display:flex;align-items:center;gap:10px;
+    }
+    .ghl-case-header .dot{width:8px;height:8px;border-radius:50%;background:var(--accent-ghl);box-shadow:0 0 8px var(--accent-ghl)}
+    .ghl-case-header span{color:var(--accent-ghl);font-size:11px;font-weight:700;letter-spacing:0.1em}
+    .ghl-case-body{
+      display:grid;grid-template-columns:1fr 1fr;gap:0;
+    }
+    .ghl-case-left{padding:20px 24px;border-right:1px solid rgba(0,255,136,0.08)}
+    .ghl-case-right{padding:20px 24px}
+    .case-label{font-size:10px;letter-spacing:0.15em;color:var(--accent-ghl);text-transform:uppercase;margin-bottom:10px;font-weight:600}
+    .case-label::before{content:'// '}
 
-    /* sections */
-    section{margin-top:48px;padding:26px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border-radius:14px;border:1px solid rgba(255,255,255,0.02)}
-    .cards{display:flex;gap:18px}
-    .card{flex:1;padding:18px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(255,255,255,0.003));border:1px solid rgba(6,60,120,0.06)}
-    .card h3{color:#cfe8ff;margin-bottom:8px}
-    .muted{color:#91bfe0;font-size:14px}
+    /* flow steps */
+    .flow-steps{display:flex;flex-direction:column;gap:8px}
+    .flow-step{
+      display:flex;align-items:flex-start;gap:10px;
+      padding:10px 12px;border-radius:6px;
+      background:rgba(0,255,136,0.02);
+      border:1px solid rgba(0,255,136,0.06);
+      transition:all .2s;cursor:default;
+    }
+    .flow-step:hover{background:rgba(0,255,136,0.05);border-color:rgba(0,255,136,0.15)}
+    .flow-step-num{
+      min-width:22px;height:22px;border-radius:4px;
+      background:rgba(0,255,136,0.1);
+      display:flex;align-items:center;justify-content:center;
+      font-size:10px;font-weight:700;color:var(--accent-ghl);
+    }
+    .flow-step-text{font-size:11px;color:var(--text-dim);line-height:1.5;padding-top:2px}
+    .flow-step-text strong{color:var(--text-bright)}
 
-    /* projects gallery */
-    .projects{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-    .proj{background:#061219;border-radius:10px;padding:10px;min-height:140px;border:1px solid rgba(10,140,255,.06)}
-    .proj img{width:100%;height:120px;object-fit:cover;border-radius:8px}
-    .proj .label{margin-top:8px;color:#bfe7ff;font-weight:700}
+    /* tech stack tags */
+    .tech-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+    .tech-tag{
+      padding:4px 10px;border-radius:4px;font-size:10px;font-weight:600;
+      letter-spacing:0.08em;background:rgba(0,255,136,0.06);
+      border:1px solid rgba(0,255,136,0.15);color:var(--accent-ghl);
+    }
 
-    /* contact */
+    /* site preview */
+    .site-preview{
+      border-radius:8px;overflow:hidden;
+      border:1px solid rgba(0,255,136,0.1);
+      position:relative;
+    }
+    .site-preview-bar{
+      padding:8px 12px;background:rgba(0,0,0,0.5);
+      display:flex;align-items:center;gap:6px;
+      border-bottom:1px solid rgba(0,255,136,0.08);
+    }
+    .site-preview-bar .dot-r{width:8px;height:8px;border-radius:50%;background:#ff5f57}
+    .site-preview-bar .dot-y{width:8px;height:8px;border-radius:50%;background:#febc2e}
+    .site-preview-bar .dot-g{width:8px;height:8px;border-radius:50%;background:#28c840}
+    .site-preview-url{
+      margin-left:8px;font-size:10px;color:var(--text-dim);
+      background:rgba(255,255,255,0.04);padding:3px 10px;border-radius:4px;
+      border:1px solid rgba(255,255,255,0.05);
+    }
+    .site-preview img{width:100%;display:block;max-height:200px;object-fit:cover;object-position:top}
+    .site-preview-placeholder{
+      width:100%;height:180px;
+      background:linear-gradient(135deg,rgba(0,20,40,0.8),rgba(0,40,20,0.6));
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+    }
+    .site-preview-placeholder span{color:var(--text-dim);font-size:11px}
+    .site-preview-placeholder .icon{font-size:28px;opacity:0.4}
+
+    /* workflow preview */
+    .workflow-preview{
+      border-radius:8px;overflow:hidden;
+      border:1px solid rgba(0,255,136,0.1);
+    }
+    .workflow-preview-bar{
+      padding:8px 14px;background:rgba(0,0,0,0.5);
+      border-bottom:1px solid rgba(0,255,136,0.08);
+      display:flex;align-items:center;justify-content:space-between;
+    }
+    .workflow-preview-bar span{font-size:10px;color:var(--accent-ghl);font-weight:600}
+    .workflow-preview-bar .status{
+      display:flex;align-items:center;gap:5px;
+      font-size:10px;color:var(--accent-ghl);
+    }
+    .workflow-preview-bar .status::before{content:'●';font-size:8px;animation:blink 1.5s step-end infinite}
+    .workflow-img{width:100%;display:block;max-height:160px;object-fit:cover;object-position:top}
+    .workflow-placeholder{
+      width:100%;height:140px;
+      background:rgba(0,10,20,0.8);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+    }
+    .workflow-placeholder span{color:var(--text-dim);font-size:11px}
+    .workflow-placeholder .icon{font-size:24px;opacity:0.3}
+
+    .ghl-footer{
+      padding:18px 28px 24px;
+      display:flex;align-items:center;justify-content:space-between;
+      flex-wrap:wrap;gap:12px;
+      border-top:1px solid rgba(0,255,136,0.08);
+      margin-top:24px;
+    }
+    .ghl-footer-text{font-size:11px;color:var(--text-dim);line-height:1.6}
+    .ghl-footer-text strong{color:var(--accent-ghl)}
+    .btn-ghl{
+      padding:10px 20px;border-radius:6px;cursor:pointer;
+      font-weight:700;font-size:12px;font-family:var(--font-mono);
+      background:rgba(0,255,136,0.08);color:var(--accent-ghl);
+      border:1px solid rgba(0,255,136,0.25);
+      transition:all .2s;
+    }
+    .btn-ghl:hover{background:rgba(0,255,136,0.15);box-shadow:0 0 20px rgba(0,255,136,0.15)}
+
+    /* ── MODAL ── */
+    .modal-overlay{
+      position:fixed;inset:0;background:rgba(2,10,16,0.9);
+      display:none;align-items:center;justify-content:center;z-index:999;
+      backdrop-filter:blur(4px);
+    }
+    .modal-content{
+      background:#061420;max-width:640px;width:90%;padding:28px;
+      border-radius:14px;border:1px solid var(--border-bright);
+      box-shadow:0 30px 80px rgba(0,0,0,0.8),0 0 60px rgba(0,200,255,0.05);
+      position:relative;
+    }
+    .modal-content h3{color:var(--text-bright);margin-bottom:10px;font-family:var(--font-display)}
+    .modal-content p,.modal-content li{color:var(--text-dim);font-size:13px;line-height:1.7}
+    .modal-section{margin-top:14px}
+    .modal-section strong{color:var(--accent);font-size:11px;letter-spacing:0.1em;text-transform:uppercase}
+    .modal-close{
+      position:absolute;top:14px;right:16px;
+      background:none;border:none;color:var(--text-dim);
+      font-size:22px;cursor:pointer;transition:color .2s;
+    }
+    .modal-close:hover{color:var(--accent)}
+
+    /* ── PREVIEW CARD ── */
+    .preview-card{
+      position:fixed;background:#061420;
+      border:1px solid var(--border-bright);border-radius:10px;
+      padding:14px;width:280px;pointer-events:none;
+      display:none;z-index:998;
+      box-shadow:0 25px 60px rgba(0,0,0,0.8),0 0 30px rgba(0,200,255,0.05);
+    }
+    .preview-card h4{color:var(--text-bright);margin-bottom:6px;font-family:var(--font-display);font-size:13px}
+    .preview-card p{color:var(--text-dim);font-size:12px;line-height:1.5}
+
+    /* ── CONTACT ── */
     .contact-grid{display:grid;grid-template-columns:1fr 360px;gap:18px}
     form{display:flex;flex-direction:column;gap:10px}
-    input,textarea{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);padding:12px;border-radius:8px;color:#dceeff}
-    .small-muted{color:#91bfe0;font-size:13px}
-
-    footer{margin-top:30px;color:#6fa8d6;font-size:14px;text-align:center}
-    spline-viewer {
-  border-radius: 14px;
-  overflow: hidden;
-}
-
-
-    @media(max-width:980px){.hero{grid-template-columns:1fr}.contact-grid{grid-template-columns:1fr}.projects{grid-template-columns:repeat(2,1fr)}.canvas-wrap{height:320px}}
-    @media(max-width:560px){.projects{grid-template-columns:1fr}}
-
-
-       .marquee {
-      background-color: #E8E8E8 ;
-      width: 100%;
-      overflow: hidden;
-      white-space: nowrap;
-      margin: 50px 0;
+    input,textarea{
+      background:rgba(255,255,255,0.02);
+      border:1px solid var(--border);
+      padding:12px;border-radius:6px;
+      color:var(--text-bright);font-family:var(--font-mono);font-size:13px;
+      transition:border-color .2s;outline:none;
     }
-    .marquee-inner {
-      display: inline-block;
-      animation: scroll 20s linear infinite;
+    input:focus,textarea:focus{border-color:var(--border-bright)}
+    .small-muted{color:var(--text-dim);font-size:12px}
+
+    footer{margin-top:40px;color:var(--text-dim);font-size:12px;text-align:center;padding-bottom:20px}
+
+    spline-viewer{border-radius:12px;overflow:hidden}
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:980px){
+      .hero{grid-template-columns:1fr}
+      .contact-grid{grid-template-columns:1fr}
+      .projects{grid-template-columns:repeat(2,1fr)}
+      .canvas-wrap{height:300px}
+      .ghl-caps{grid-template-columns:repeat(2,1fr)}
+      .ghl-case-body{grid-template-columns:1fr}
+      .ghl-case-left{border-right:none;border-bottom:1px solid rgba(0,255,136,0.08)}
     }
-    .marquee img {
-      height: 50px;
-      margin: 0 25px;
+    @media(max-width:560px){
+      .projects{grid-template-columns:1fr}
+      .ghl-caps{grid-template-columns:1fr}
+      .cards{flex-direction:column}
     }
-    @keyframes scroll {
-      from { transform: translateX(0); }
-      to { transform: translateX(-100%); }
-    }
-/* Modal */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(2,10,25,0.85);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-}
-
-.modal-content {
-  background: #071426;
-  max-width: 640px;
-  width: 90%;
-  padding: 24px;
-  border-radius: 14px;
-  border: 1px solid rgba(0,140,255,0.2);
-  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
-}
-
-.modal-content h3 {
-  color: #e6f5ff;
-  margin-bottom: 10px;
-}
-
-.modal-content p,
-.modal-content li {
-  color: #9fcfff;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.modal-section {
-  margin-top: 14px;
-}
-
-.modal-close {
-  position: absolute;
-  top: 14px;
-  right: 16px;
-  background: none;
-  border: none;
-  color: #9fdcff;
-  font-size: 26px;
-  cursor: pointer;
-}
-.proj {
-  cursor: pointer;
-  transition: transform .25s ease, box-shadow .25s ease;
-}
-
-.proj img {
-  transition: transform .3s ease;
-}
-
-.proj:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 50px rgba(0,140,255,0.2);
-}
-
-.proj:hover img {
-  transform: scale(1.08);
-}
-.preview-card {
-  position: fixed;
-  background: #071426;
-  border: 1px solid rgba(0,140,255,0.2);
-  border-radius: 12px;
-  padding: 14px;
-  width: 300px;
-  pointer-events: none;
-  display: none;
-  z-index: 998;
-  box-shadow: 0 25px 60px rgba(0,0,0,0.6);
-}
-
-.preview-card h4 {
-  color: #e6f5ff;
-  margin-bottom: 6px;
-}
-
-.preview-card p {
-  color: #9fcfff;
-  font-size: 13px;
-  line-height: 1.5;
-}
-
   </style>
 </head>
 <body>
   <div class="bg-grid"><div class="neon-lines"></div></div>
+
   <div class="container" id="app">
+
+    <!-- ── HEADER ── -->
     <header>
       <div class="brand">
-        <div class="logo"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h16M12 4v16" stroke="#9be9ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="logo">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M4 12h16M12 4v16" stroke="#00c8ff" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
         <div>
-          <h1>Michael Alteza</h1>
-          <p class="lead">AI Automation • Social Media • CRM</p>
+          <div class="brand-name">Michael Alteza</div>
+          <div class="brand-sub">AI AUTOMATION • SOCIAL MEDIA • CRM</div>
         </div>
       </div>
       <nav>
-        <a class="small-muted" href="#projects">Projects</a>
+        <a href="#projects">Projects</a>
+        &nbsp;&nbsp;
+        <a href="#ghl-expert">GHL</a>
       </nav>
     </header>
 
     <main>
-      <section class="hero">
-        <div class="left">
-          <span class="eyebrow">AI & Automation</span>
-          <div class="title">I build intelligent systems that automate and scale your business</div>
-          <p class="subtitle">I design automated workflows, AI-driven social media systems and CRM integrations that save time and increase performance. Book a call to see a demo.</p>
+
+      <!-- ── HERO ── -->
+      <div class="hero">
+        <div class="hero-left">
+          <div class="terminal-tag">AUTOMATION SPECIALIST<span class="blink">_</span></div>
+          <div class="hero-title">I build intelligent systems that <span>automate</span> and scale your business</div>
+          <p class="hero-sub">I design automated workflows, AI-driven social media systems and CRM integrations that save time and increase performance. Book a call to see a demo.</p>
           <div class="cta">
             <button class="btn btn-primary" id="hireBtn">Hire Me</button>
-            <button class="btn btn-ghost" id="bookBtn"
-onclick="Calendly.initPopupWidget({url: 'https://calendly.com/michaelalteza26/30min'}); return false;">
-  Book Appointment
-</button>
-
+            <button class="btn btn-ghost" onclick="Calendly.initPopupWidget({url:'https://calendly.com/michaelalteza26/30min'});return false;">Book Appointment</button>
           </div>
-
-          <div style="margin-top:18px;color:#91bfe0;font-size:14px">Contact: 09910716848 • <a href="https://www.linkedin.com/in/michael-alteza-584b73363" target="_blank" style="color:#9fdcff">LinkedIn</a> • <a href="https://www.facebook.com/profile.php?id=61582102030895" target="_blank" style="color:#9fdcff">Facebook</a></div>
+          <div class="contact-line" style="margin-top:16px;font-size:12px">
+            Contact: 09910716848 •
+            <a href="https://www.linkedin.com/in/michael-alteza-584b73363" target="_blank">LinkedIn</a> •
+            <a href="https://www.facebook.com/profile.php?id=61582102030895" target="_blank">Facebook</a>
+          </div>
         </div>
-
         <div class="canvas-wrap">
-  <spline-viewer
-      url="https://prod.spline.design/tk2hf11OGIG2Yo0D/scene.splinecode"
-      style="width: 100%; height: 100%; border-radius: 10px; display: block;">
-  </spline-viewer>
-</div>
+          <spline-viewer url="https://prod.spline.design/tk2hf11OGIG2Yo0D/scene.splinecode" style="width:100%;height:100%;border-radius:10px;display:block;"></spline-viewer>
+        </div>
+      </div>
 
-      </section>
-
+      <!-- ── WHAT I DO ── -->
       <section>
-        <h2 style="color:#dff6ff;margin-bottom:12px">What I Do</h2>
+        <div class="section-label">capabilities</div>
+        <h2>What I Do</h2>
         <div class="cards">
           <div class="card">
             <h3>AI Automation</h3>
@@ -246,118 +508,257 @@ onclick="Calendly.initPopupWidget({url: 'https://calendly.com/michaelalteza26/30
             <div class="muted">CRM setup, lead routing, customer journeys and analytics integration.</div>
           </div>
         </div>
-           <div class="marquee">
-    <div class="marquee-inner">
-      <img src="https://cdn-icons-png.flaticon.com/512/5968/5968866.png">
-      <img src="https://cdn-icons-png.flaticon.com/512/873/873107.png">
-      <img src="https://cdn-icons-png.flaticon.com/512/2504/2504923.png">
-      <img src="https://cdn-icons-png.flaticon.com/512/732/732200.png">
-      <img src="https://cdn-icons-png.flaticon.com/512/906/906361.png">
-      <img src="https://cdn-icons-png.flaticon.com/512/906/906361.png">
-        <img src="https://logo.svgcdn.com/simple-icons/n8n-dark.png">
-        <img src="https://logo.svgcdn.com/logos/zapier.png">
-        <img src="https://logo.svgcdn.com/logos/airtable.png">
-        <img src="https://logo.clearbit.com/gohighlevel.com">
-    </div> 
-       <div class="marquee-inner" aria-hidden="true">
-      <img src="https://cdn-icons-png.flaticon.com/512/5968/5968866.png">
-      <img src="https://cdn-icons-png.flaticon.com/512/873/873107.png">
-      <img src="https://cdn-icons-png.flaticon.com/512/2504/2504923.png">
-      <img src="https://cdn-icons-png.flaticon.com/512/732/732200.png">
-      <img src="https://cdn-icons-png.flaticon.com/512/906/906361.png">
-      <img src="https://cdn-icons-png.flaticon.com/512/906/906361.png">
-        <img src="https://logo.svgcdn.com/simple-icons/n8n-dark.png">
-        <img src="https://logo.svgcdn.com/logos/zapier.png">
-        <img src="https://logo.svgcdn.com/logos/airtable.png">
-        <img src="https://logo.clearbit.com/gohighlevel.com">
-    </div>       
-      </section>
-    
-      <section id="projects">
-        <h2 style="color:#dff6ff;margin-bottom:12px">Sample Work (Mockups)</h2>
-        <h3 style="color:#9fdcff;margin:18px 0 10px">N8N Automation</h3>
-        <div class="projects">
-        <div class="proj"
-     onclick="openProject('resume')"
-     onmouseenter="previewProject('resume')"
-     onmouseleave="closePreview()">
-  <img src="asset/sample3.jfif" alt="workflow sample">
-      <div class="label">AI Social Media Manager • Social Media Platform Integration</div>
-      </div>
-          <div class="proj"
-     onclick="openProject('marketing')"
-     onmouseenter="previewProject('marketing')"
-     onmouseleave="closePreview()">
-            <img src="asset/sample2.jfif" alt="marketing hub">
-            <div class="label">ARCHTOCULUTURE Mulit-Platform Marketing Automation</div>
+        <div class="marquee">
+          <div class="marquee-inner">
+            <img src="https://cdn-icons-png.flaticon.com/512/5968/5968866.png">
+            <img src="https://cdn-icons-png.flaticon.com/512/873/873107.png">
+            <img src="https://cdn-icons-png.flaticon.com/512/2504/2504923.png">
+            <img src="https://cdn-icons-png.flaticon.com/512/732/732200.png">
+            <img src="https://cdn-icons-png.flaticon.com/512/906/906361.png">
+            <img src="https://logo.svgcdn.com/simple-icons/n8n-dark.png">
+            <img src="https://logo.svgcdn.com/logos/zapier.png">
+            <img src="https://logo.svgcdn.com/logos/airtable.png">
+            <img src="https://logo.clearbit.com/gohighlevel.com">
           </div>
-          <div class="proj"
-     onclick="openProject('social')"
-     onmouseenter="previewProject('social')"
-     onmouseleave="closePreview()">
+          <div class="marquee-inner" aria-hidden="true">
+            <img src="https://cdn-icons-png.flaticon.com/512/5968/5968866.png">
+            <img src="https://cdn-icons-png.flaticon.com/512/873/873107.png">
+            <img src="https://cdn-icons-png.flaticon.com/512/2504/2504923.png">
+            <img src="https://cdn-icons-png.flaticon.com/512/732/732200.png">
+            <img src="https://cdn-icons-png.flaticon.com/512/906/906361.png">
+            <img src="https://logo.svgcdn.com/simple-icons/n8n-dark.png">
+            <img src="https://logo.svgcdn.com/logos/zapier.png">
+            <img src="https://logo.svgcdn.com/logos/airtable.png">
+            <img src="https://logo.clearbit.com/gohighlevel.com">
+          </div>
+        </div>
+      </section>
+
+      <!-- ── SAMPLE WORK ── -->
+      <section id="projects">
+        <div class="section-label">sample work</div>
+        <h2>Sample Work (Mockups)</h2>
+
+        <h3 class="subsection">N8N Automation</h3>
+        <div class="projects">
+          <div class="proj" onclick="openProject('resume')" onmouseenter="previewProject('resume')" onmouseleave="closePreview()">
+            <img src="asset/sample3.jfif" alt="workflow sample">
+            <div class="label">AI Social Media Manager • Social Media Platform Integration</div>
+          </div>
+          <div class="proj" onclick="openProject('marketing')" onmouseenter="previewProject('marketing')" onmouseleave="closePreview()">
+            <img src="asset/sample2.jfif" alt="marketing hub">
+            <div class="label">ARCHTOCULUTURE Multi-Platform Marketing Automation</div>
+          </div>
+          <div class="proj" onclick="openProject('social')" onmouseenter="previewProject('social')" onmouseleave="closePreview()">
             <img src="asset/sample1.jfif" alt="social manager">
             <div class="label">AI Social Media Manager • Content + Engagement</div>
           </div>
         </div>
 
-        
-        <!--make.com-->
-          <h3 style="color:#9fdcff;margin:26px 0 10px">Make.com Automations</h3>
-         <div class="projects">
-        <div class="proj"
-     onclick="openProject('make1')"
-     onmouseenter="previewProject('make1')"
-     onmouseleave="closePreview()">
-  <img src="asset/make.1.jfif" alt="Lead Creation & Update">
-      <div class="label">Create and Update Leads Pipeline</div>
-      </div>
-          <div class="proj"
-     onclick="openProject('make2')"
-     onmouseenter="previewProject('make2')"
-     onmouseleave="closePreview()">
+        <h3 class="subsection">Make.com Automations</h3>
+        <div class="projects">
+          <div class="proj" onclick="openProject('make1')" onmouseenter="previewProject('make1')" onmouseleave="closePreview()">
+            <img src="asset/make.1.jfif" alt="Lead Creation & Update">
+            <div class="label">Create and Update Leads Pipeline</div>
+          </div>
+          <div class="proj" onclick="openProject('make2')" onmouseenter="previewProject('make2')" onmouseleave="closePreview()">
             <img src="asset/make.2.jfif" alt="Order">
-            <div class="label">Automate Order Intake, Validation, Erinchment and Error Notification</div>
+            <div class="label">Automate Order Intake, Validation, Enrichment and Error Notification</div>
           </div>
-          <div class="proj"
-     onclick="openProject('make3')"
-     onmouseenter="previewProject('make3')"
-     onmouseleave="closePreview()">
+          <div class="proj" onclick="openProject('make3')" onmouseenter="previewProject('make3')" onmouseleave="closePreview()">
             <img src="asset/make.3.jfif" alt="Leads router">
-            <div class="label">Automated Lead Intake, Validation & Routing SyStem</div>
+            <div class="label">Automated Lead Intake, Validation & Routing System</div>
           </div>
-         </div>
-
-        
+        </div>
       </section>
+
+      <!-- ── GHL EXPERT SECTION ── -->
+      <div class="ghl-section" id="ghl-expert">
+
+        <div class="ghl-header">
+          <div>
+            <div class="ghl-badge">GHL Expert / Specialist</div>
+            <div class="ghl-title">GoHighLevel <span>Full-Stack</span><br>CRM Implementation</div>
+            <p class="ghl-desc">
+              Beyond just automation — I architect complete GoHighLevel ecosystems from the ground up.
+              Pipeline design, funnel builds, lead routing systems, sub-account management, and AI-powered
+              workflows that turn GHL into a fully autonomous patient/client acquisition machine.
+            </p>
+          </div>
+        </div>
+
+        <!-- Capabilities -->
+        <div class="ghl-caps">
+          <div class="ghl-cap">
+            <div class="ghl-cap-icon">⚡</div>
+            <div class="ghl-cap-title">Pipeline Architecture</div>
+            <div class="ghl-cap-desc">Custom pipeline design, stage logic, opportunity routing and automated stage progression based on lead behavior.</div>
+          </div>
+          <div class="ghl-cap">
+            <div class="ghl-cap-icon">🤖</div>
+            <div class="ghl-cap-title">AI-Powered Workflows</div>
+            <div class="ghl-cap-desc">Webhook-driven automation using n8n + GHL API to score, qualify, and route leads without manual intervention.</div>
+          </div>
+          <div class="ghl-cap">
+            <div class="ghl-cap-icon">📋</div>
+            <div class="ghl-cap-title">Form & Funnel Builds</div>
+            <div class="ghl-cap-desc">High-converting intake forms, landing pages and consultation funnels deeply integrated with CRM pipelines.</div>
+          </div>
+          <div class="ghl-cap">
+            <div class="ghl-cap-icon">📧</div>
+            <div class="ghl-cap-title">Multi-Channel Follow-ups</div>
+            <div class="ghl-cap-desc">Automated email, SMS and voicemail sequences triggered by pipeline stage changes and lead scoring results.</div>
+          </div>
+          <div class="ghl-cap">
+            <div class="ghl-cap-icon">🔗</div>
+            <div class="ghl-cap-title">Third-Party Integrations</div>
+            <div class="ghl-cap-desc">Connecting GHL with Zapier, n8n, Supabase, Calendly, Stripe and custom APIs via webhooks and REST.</div>
+          </div>
+          <div class="ghl-cap">
+            <div class="ghl-cap-icon">📊</div>
+            <div class="ghl-cap-title">Reporting & Analytics</div>
+            <div class="ghl-cap-desc">Custom dashboards, opportunity tracking, lead source attribution and pipeline performance reporting.</div>
+          </div>
+        </div>
+
+        <!-- Case Study -->
+        <div style="padding:0 28px">
+          <h3 class="subsection" style="color:var(--accent-ghl);margin-top:28px;">Live Case Study</h3>
+          <div class="ghl-case">
+            <div class="ghl-case-header">
+              <div class="dot"></div>
+              <span>BEVERLY HILLS LUXURY DENTISTRY — PATIENT ACQUISITION SYSTEM</span>
+            </div>
+            <div class="ghl-case-body">
+
+              <!-- LEFT: flow -->
+              <div class="ghl-case-left">
+                <div class="case-label">Automation Flow</div>
+                <div class="flow-steps">
+                  <div class="flow-step">
+                    <div class="flow-step-num">01</div>
+                    <div class="flow-step-text"><strong>Form Submission</strong> — Patient fills "Luxury Consultation Application" embedded on the clinic site</div>
+                  </div>
+                  <div class="flow-step">
+                    <div class="flow-step-num">02</div>
+                    <div class="flow-step-text"><strong>Zapier Bridge</strong> — GHL triggers Zapier on new lead, which fires a POST to n8n webhook</div>
+                  </div>
+                  <div class="flow-step">
+                    <div class="flow-step-num">03</div>
+                    <div class="flow-step-text"><strong>Data Validation</strong> — n8n validates required fields (email, contact ID, budget) before processing</div>
+                  </div>
+                  <div class="flow-step">
+                    <div class="flow-step-num">04</div>
+                    <div class="flow-step-text"><strong>AI Lead Scoring</strong> — Budget analyzed: <strong style="color:var(--accent-ghl)">$10k+</strong> = VIP, below = Standard</div>
+                  </div>
+                  <div class="flow-step">
+                    <div class="flow-step-num">05</div>
+                    <div class="flow-step-text"><strong>GHL Pipeline Update</strong> — VIP → "Consultation Approved", Standard → "New Application"</div>
+                  </div>
+                  <div class="flow-step">
+                    <div class="flow-step-num">06</div>
+                    <div class="flow-step-text"><strong>Email Notifications</strong> — Team alerted instantly, lead receives confirmation email</div>
+                  </div>
+                  <div class="flow-step">
+                    <div class="flow-step-num">07</div>
+                    <div class="flow-step-text"><strong>Full Logging</strong> — Every execution logged with tier, score, reasoning and timestamps</div>
+                  </div>
+                </div>
+
+                <div style="margin-top:16px">
+                  <div class="case-label">Tech Stack</div>
+                  <div class="tech-tags">
+                    <span class="tech-tag">GoHighLevel API</span>
+                    <span class="tech-tag">n8n</span>
+                    <span class="tech-tag">Zapier</span>
+                    <span class="tech-tag">Supabase</span>
+                    <span class="tech-tag">Render</span>
+                    <span class="tech-tag">SMTP</span>
+                    <span class="tech-tag">REST Webhooks</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- RIGHT: previews -->
+              <div class="ghl-case-right">
+                <div class="case-label">Clinic Website</div>
+                <div class="site-preview">
+                  <div class="site-preview-bar">
+                    <div class="dot-r"></div>
+                    <div class="dot-y"></div>
+                    <div class="dot-g"></div>
+                    <div class="site-preview-url">Beverly Hills Luxury Dentistry</div>
+                  </div>
+                  <!-- SWAP: replace the placeholder div below with: <img src="asset/dental-preview.jpg"> -->
+                  <div class="site-preview-placeholder">
+                    <div class="icon">🦷</div>
+                    <span>asset/dental-preview.jpg</span>
+                    <span style="font-size:10px;opacity:0.6">Replace with screenshot</span>
+                  </div>
+                </div>
+
+                <div style="margin-top:14px">
+                  <div class="case-label">n8n Workflow</div>
+                  <div class="workflow-preview">
+                    <div class="workflow-preview-bar">
+                      <span>GHL - Patient Acquisition Lead Qualifier</span>
+                      <div class="status">ACTIVE</div>
+                    </div>
+                    <!-- SWAP: replace the placeholder div below with: <img class="workflow-img" src="asset/n8n-workflow.jpg"> -->
+                    <div class="workflow-placeholder">
+                      <div class="icon">⚙️</div>
+                      <span>asset/n8n-workflow.jpg</span>
+                      <span style="font-size:10px;opacity:0.5">Replace with screenshot</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="margin-top:14px;padding:12px;border-radius:8px;background:rgba(0,255,136,0.03);border:1px solid rgba(0,255,136,0.08)">
+                  <div class="case-label">Pipeline</div>
+                  <div style="font-size:12px;color:var(--text-dim);line-height:1.7">
+                    <div>📌 <strong style="color:var(--text-bright)">Patient Acquisition</strong></div>
+                    <div style="margin-top:6px;padding-left:12px">
+                      <div>→ <span style="color:var(--accent-ghl)">Consultation Approved</span> <span style="opacity:0.5">(VIP $10k+)</span></div>
+                      <div>→ <span style="color:var(--accent)">New Application</span> <span style="opacity:0.5">(Standard, manual review)</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="ghl-footer">
+          <div class="ghl-footer-text">
+            Need a complete <strong>GHL ecosystem</strong> built for your business?<br>
+            From pipeline architecture to AI-powered lead routing — fully automated.
+          </div>
+          <button class="btn-ghl" onclick="Calendly.initPopupWidget({url:'https://calendly.com/michaelalteza26/30min'});return false;">
+            Book a GHL Strategy Call →
+          </button>
+        </div>
+
+      </div>
+      <!-- end ghl-section -->
+
+      <!-- ── PROJECT MODAL ── -->
       <div id="projectPreview" class="preview-card"></div>
+      <div id="projectModal" class="modal-overlay">
+        <div class="modal-content">
+          <button class="modal-close" onclick="closeModal()">×</button>
+          <h3 id="modalTitle"></h3>
+          <p id="modalDescription"></p>
+          <div class="modal-section"><strong>Why it was built</strong><p id="modalWhy"></p></div>
+          <div class="modal-section"><strong>Tools & Stack</strong><p id="modalTools"></p></div>
+          <div class="modal-section"><strong>Automation Flow</strong><ul id="modalFlow"></ul></div>
+        </div>
+      </div>
 
-      <!-- Project Modal -->
-<div id="projectModal" class="modal-overlay">
-  <div class="modal-content">
-    <button class="modal-close" onclick="closeModal()">×</button>
-    <h3 id="modalTitle"></h3>
-    <p id="modalDescription"></p>
-
-    <div class="modal-section">
-      <strong>Why it was built</strong>
-      <p id="modalWhy"></p>
-    </div>
-
-    <div class="modal-section">
-      <strong>Tools & Stack</strong>
-      <p id="modalTools"></p>
-    </div>
-
-    <div class="modal-section">
-      <strong>Automation Flow</strong>
-      <ul id="modalFlow"></ul>
-    </div>
-  </div>
-</div>
-
-
+      <!-- ── SPECIAL FEATURES ── -->
       <section>
-        <h2 style="color:#dff6ff;margin-bottom:12px">Special Features</h2>
+        <div class="section-label">extras</div>
+        <h2>Special Features</h2>
         <div class="cards">
           <div class="card">
             <h3>Interactive 3D Robot</h3>
@@ -374,25 +775,28 @@ onclick="Calendly.initPopupWidget({url: 'https://calendly.com/michaelalteza26/30
         </div>
       </section>
 
+      <!-- ── CONTACT ── -->
       <section>
-        <h2 style="color:#dff6ff;margin-bottom:12px">Contact & Bookings</h2>
+        <div class="section-label">contact</div>
+        <h2>Contact & Bookings</h2>
         <div class="contact-grid">
           <div>
             <p class="small-muted">Prefer a quick meeting? Click Book Appointment to open the scheduler.</p>
-            <div style="margin-top:12px;background:#041021;padding:14px;border-radius:10px;border:1px solid rgba(0,120,255,0.05)">
-              <strong style="color:#bfe7ff">Phone</strong>
+            <div style="margin-top:12px;background:rgba(0,0,0,0.3);padding:16px;border-radius:10px;border:1px solid var(--border)">
+              <strong style="color:var(--text-bright);font-size:13px">Phone</strong>
               <div class="muted">09910716848</div>
-              <strong style="margin-top:8px;display:block;color:#bfe7ff">WhatsApp</strong>
+              <strong style="margin-top:10px;display:block;color:var(--text-bright);font-size:13px">WhatsApp</strong>
               <div class="muted">+63 991 071 6848</div>
-              <strong style="margin-top:8px;display:block;color:#bfe7ff">Social</strong>
-              <div class="muted"><a href="https://www.linkedin.com/in/michael-alteza-584b73363" target="_blank" style="color:#9fdcff">LinkedIn</a> • <a href="https://www.facebook.com/profile.php?id=61582102030895" target="_blank" style="color:#9fdcff">Facebook</a></div>
+              <strong style="margin-top:10px;display:block;color:var(--text-bright);font-size:13px">Social</strong>
+              <div class="muted">
+                <a href="https://www.linkedin.com/in/michael-alteza-584b73363" target="_blank" style="color:var(--accent);text-decoration:none">LinkedIn</a> •
+                <a href="https://www.facebook.com/profile.php?id=61582102030895" target="_blank" style="color:var(--accent);text-decoration:none">Facebook</a>
+              </div>
             </div>
-
-            <div style="margin-top:14px"><!-- Calendly embed placeholder -->
-              <div id="calendly-embed" style="min-height:360px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.03)"></div>
+            <div style="margin-top:14px">
+              <div id="calendly-embed" style="min-height:360px;border-radius:10px;overflow:hidden;border:1px solid var(--border)"></div>
             </div>
           </div>
-
           <div>
             <form id="contactForm" action="https://formspree.io/f/xovrgqaq" method="POST">
               <input type="text" name="name" placeholder="Your name" required>
@@ -400,283 +804,116 @@ onclick="Calendly.initPopupWidget({url: 'https://calendly.com/michaelalteza26/30
               <input type="text" name="subject" placeholder="Subject">
               <textarea name="message" placeholder="Message" rows="6" required></textarea>
               <button class="btn btn-primary" type="submit">Send Message</button>
-              <div class="small-muted" style="margin-top:8px">This form uses Formspree to forward messages to your email. Replace the action URL with your Formspree endpoint.</div>
+              <div class="small-muted" style="margin-top:8px">Messages forwarded via Formspree to your email.</div>
             </form>
           </div>
         </div>
       </section>
 
-      <footer>
-        © 2025 Michael Alteza — AI Automation & Social Media
-      </footer>
+      <footer>© 2025 Michael Alteza — AI Automation & Social Media</footer>
+
     </main>
   </div>
 
-<!-- Spline Viewer Script -->
-<script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.0/build/spline-viewer.js"></script>
-
+  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.0/build/spline-viewer.js"></script>
 
   <script>
-    // Basic Three.js scene: low-poly robot head with eyes that follow cursor
-    const canvas = document.getElementById('three-canvas');
-    const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
-    renderer.setPixelRatio(window.devicePixelRatio);
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
-    camera.position.set(0,0,6);
-
-    // lighting
-    const amb = new THREE.AmbientLight(0xffffff,0.7);
-    scene.add(amb);
-    const dir = new THREE.DirectionalLight(0x7fe1ff,0.8);
-    dir.position.set(5,5,5);
-    scene.add(dir);
-
-    // head
-    const headGeo = new THREE.SphereGeometry(1.6, 32, 32);
-    const headMat = new THREE.MeshStandardMaterial({color:0x0b2340,metalness:0.2,roughness:0.3,envMapIntensity:0.7});
-    const head = new THREE.Mesh(headGeo, headMat);
-    head.scale.set(1,1.05,1);
-    scene.add(head);
-
-    // eye whites
-    const eyeGeo = new THREE.SphereGeometry(0.28,16,16);
-    const whiteMat = new THREE.MeshStandardMaterial({color:0xe9fbff,metalness:0.05,roughness:0.6});
-    const leftEye = new THREE.Mesh(eyeGeo, whiteMat);
-    const rightEye = leftEye.clone();
-    leftEye.position.set(-0.55,0.15,1.45);
-    rightEye.position.set(0.55,0.15,1.45);
-    scene.add(leftEye,rightEye);
-
-    // pupils (tiny dark spheres)
-    const pupilGeo = new THREE.SphereGeometry(0.12,16,16);
-    const pupilMat = new THREE.MeshStandardMaterial({color:0x05122a});
-    const lp = new THREE.Mesh(pupilGeo,pupilMat);
-    const rp = lp.clone();
-    lp.position.set(-0.55,0.15,1.6);
-    rp.position.set(0.55,0.15,1.6);
-    scene.add(lp,rp);
-
-    // subtle glow using sprite
-    function addGlow(x,y,z){
-      const sprMat = new THREE.SpriteMaterial({color:0x07a9ff,opacity:0.07});
-      const spr = new THREE.Sprite(sprMat);
-      spr.scale.set(6,3,1);
-      spr.position.set(x,y,z);
-      scene.add(spr);
-    }
-    addGlow(0,-0.8,0);
-
-    // resize handler
-    function resize(){
-      const w = canvas.clientWidth; const h = canvas.clientHeight;
-      renderer.setSize(w,h,false);
-      camera.aspect = w/h; camera.updateProjectionMatrix();
-    }
-    window.addEventListener('resize',resize); resize();
-
-    // mouse tracking: convert mouse to 3D target
-    const mouse = new THREE.Vector2(0,0);
-    let target = new THREE.Vector3();
-    function onPointerMove(e){
-      const rect = canvas.getBoundingClientRect();
-      mouse.x = ( (e.clientX - rect.left) / rect.width ) * 2 - 1;
-      mouse.y = - ( (e.clientY - rect.top) / rect.height ) * 2 + 1;
-      // project into 3D at z=0 plane
-      const v = new THREE.Vector3(mouse.x, mouse.y, 0.5);
-      v.unproject(camera);
-      const dir = v.sub(camera.position).normalize();
-      const distance = (0 - camera.position.z) / dir.z;
-      target = camera.position.clone().add(dir.multiplyScalar(distance));
-    }
-    window.addEventListener('pointermove', onPointerMove);
-
-    // subtle breathing animation
-    let t = 0;
-    function animate(){
-      t += 0.01;
-      head.rotation.y = Math.sin(t*0.6)*0.06;
-      head.rotation.x = Math.sin(t*0.4)*0.03;
-
-      // eyes look towards target with limited offset
-      function aim(eye, pupil, offsetX){
-        const worldPos = eye.localToWorld(new THREE.Vector3());
-        const dir = target.clone().sub(worldPos).normalize();
-        const look = worldPos.clone().add(dir.multiplyScalar(0.25));
-        // compute local coordinates for pupil
-        const local = eye.worldToLocal(look);
-        pupil.position.copy(eye.position).add(local.multiplyScalar(0.4));
-      }
-      aim(leftEye, lp, -1); aim(rightEye, rp, 1);
-
-      renderer.render(scene,camera);
-      requestAnimationFrame(animate);
-    }
-    animate();
-
-    // buttons
-    document.getElementById('bookBtn').addEventListener('click', ()=>{
-      // replace with your Calendly url
-      const url = 'https://calendly.com/michaelalteza26/30min';
-      // open inline using widget (if desired) or new tab
-      window.open(url,'_blank');
+    // ── Calendly ──
+    Calendly.initInlineWidget({
+      url: 'https://calendly.com/michaelalteza26/30min',
+      parentElement: document.getElementById('calendly-embed')
     });
-    document.getElementById('hireBtn').addEventListener('click', ()=>{document.getElementById('contactForm').scrollIntoView({behavior:'smooth'})});
 
-    // simple initial mouse target center
-    target.set(0,0,0);
+    // ── Buttons ──
+    document.getElementById('hireBtn').addEventListener('click', () => {
+      document.getElementById('contactForm').scrollIntoView({behavior:'smooth'});
+    });
+
+    // ── Project data ──
+    const projects = {
+      resume: {
+        title: "AI Social Media Manager • Social Media Platform Integration",
+        description: "Automated Social Media Handling system that evaluates audience and delivers structured feedback via different platforms.",
+        why: "Built to eliminate manual resume screening and provide instant candidate insights to recruiters.",
+        tools: "N8N, OpenAI, Social Media Bot API, Google Drive",
+        flow: ["Content uploaded via webhook","Text extracted and cleaned","AI evaluates skills, content type, and gaps","Structured captions generated","Result delivered via Social Media Platform"]
+      },
+      marketing: {
+        title: "Marketing Automation Hub • Multi-Platform",
+        description: "Central automation hub connecting lead sources, CRM, and follow-ups.",
+        why: "To unify fragmented marketing systems into one reliable automation pipeline.",
+        tools: "N8n, Airtable, Zapier, Meta Ads, Webhooks",
+        flow: ["Lead captured from ad or form","Data validated and deduplicated","CRM record created or updated","Automated follow-up triggered","Slack notification sent"]
+      },
+      social: {
+        title: "AI Social Media Manager • Content + Engagement",
+        description: "AI-powered content creation and engagement automation.",
+        why: "Built to scale social media presence without manual posting or replies.",
+        tools: "OpenAI, N8N, Meta API, Scheduler",
+        flow: ["Content brief received","AI generates post variations","Scheduled across platforms","Engagement monitored","Analytics logged"]
+      },
+      make1: {
+        title: "Automated Lead Intake & CRM Pipeline Management",
+        description: "Automatically receives incoming leads, validates data, detects duplicates, and creates or updates CRM pipeline records with full notifications and logging.",
+        why: "To ensure every inbound lead is processed correctly, prevent duplicates, maintain clean CRM data, and alert the team in real time.",
+        tools: "Make.com, Webhooks, Airtable, ClickUp, Slack, Gmail",
+        flow: ["Receive lead data via webhook","Validate and clean incoming lead fields","Search CRM to check if lead already exists","Route logic to create a new lead or update existing record","Update CRM pipeline stage","Create a task in ClickUp for follow-up","Notify team via Slack and email","Log errors and system status"]
+      },
+      make2: {
+        title: "Automated Order Processing with Validation & Error Handling",
+        description: "Processes incoming orders, validates data, detects existing records, updates order status, manages backorders, and alerts stakeholders on success or failure.",
+        why: "To eliminate manual order handling, reduce errors, ensure accurate fulfillment tracking, and immediately surface issues.",
+        tools: "Make.com, Webhooks, Airtable, Slack, Gmail",
+        flow: ["Receive order payload via webhook","Sanitize and normalize order data","Validate required fields and business rules","Search existing records to prevent duplicates","Route orders based on availability and status","Update order or create backorder records","Notify operators via Slack","Send email confirmations or error alerts","Log final status"]
+      },
+      make3: {
+        title: "Automated Lead Intake, Validation & Routing System",
+        description: "Make.com automation that ingests inbound events via webhooks, sanitizes and validates data, routes execution based on event type, and escalates downstream failures with structured error alerts.",
+        why: "Makes logs clearer, helps if you later add monitoring, shows lifecycle thinking.",
+        tools: "Make.com, Webhooks, Airtable, Slack, Gmail, HTTP Request",
+        flow: ["Receive new lead via webhook","Sanitize and normalize data","Separate via type of sources","Set Processing Status","Build a processed payload","Send the lead intake to downstream using HTTP"]
+      }
+    };
+
+    function openProject(key) {
+      const p = projects[key];
+      document.getElementById("modalTitle").innerText = p.title;
+      document.getElementById("modalDescription").innerText = p.description;
+      document.getElementById("modalWhy").innerText = p.why;
+      document.getElementById("modalTools").innerText = p.tools;
+      const flowList = document.getElementById("modalFlow");
+      flowList.innerHTML = "";
+      p.flow.forEach(step => {
+        const li = document.createElement("li");
+        li.textContent = step;
+        li.style.marginBottom = "6px";
+        flowList.appendChild(li);
+      });
+      document.getElementById("projectModal").style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("projectModal").style.display = "none";
+    }
+
+    function previewProject(key) {
+      const p = projects[key];
+      const preview = document.getElementById("projectPreview");
+      preview.innerHTML = `<h4>${p.title}</h4><p>${p.description}</p><p style="margin-top:6px"><strong style="color:var(--accent)">Tools:</strong> ${p.tools}</p>`;
+      preview.style.display = "block";
+    }
+
+    function closePreview() {
+      document.getElementById("projectPreview").style.display = "none";
+    }
+
+    document.addEventListener("mousemove", e => {
+      const preview = document.getElementById("projectPreview");
+      if (preview.style.display === "block") {
+        preview.style.left = e.clientX + 20 + "px";
+        preview.style.top = e.clientY + 20 + "px";
+      }
+    });
   </script>
-
-<script>
-  Calendly.initInlineWidget({
-    url: 'https://calendly.com/michaelalteza26/30min',
-    parentElement: document.getElementById('calendly-embed')
-  });
-</script>
-<script>
-const projects = {
-  resume: {
-    title: "AI Social Media Manager • Social Media Platform Intefration",
-    description: "Automated Social Media Handling system that evaluates audience and delivers structured feedback via diffirent kind of paltform.",
-    why: "Built to eliminate manual resume screening and provide instant candidate insights to recruiters.",
-    tools: "N8N, OpenAI, Social MEdia Bot API, Google Drive",
-    flow: [
-      "Content uploaded via webhook",
-      "Text extracted and cleaned",
-      "AI evaluates skills, Content type, and gaps",
-      "Structured Captions generated",
-      "Result delivered via Social Media Platform "
-    ]
-  },
-  marketing: {
-    title: "Marketing Automation Hub • Multi-Platform",
-    description: "Central automation hub connecting lead sources, CRM, and follow-ups.",
-    why: "To unify fragmented marketing systems into one reliable automation pipeline.",
-    tools: "N8n, Airtable, Zapier, Meta Ads, Webhooks",
-    flow: [
-      "Lead captured from ad or form",
-      "Data validated and deduplicated",
-      "CRM record created or updated",
-      "Automated follow-up triggered",
-      "Slack notification sent"
-    ]
-  },
-  social: {
-    title: "AI Social Media Manager • Content + Engagement",
-    description: "AI-powered content creation and engagement automation.",
-    why: "Built to scale social media presence without manual posting or replies.",
-    tools: "OpenAI, N8N, Meta API, Scheduler",
-    flow: [
-      "Content brief received",
-      "AI generates post variations",
-      "Scheduled across platforms",
-      "Engagement monitored",
-      "Analytics logged"
-    ]
-  },
-make1: {
-  title: "Automated Lead Intake & CRM Pipeline Management",
-  description: "Automatically receives incoming leads, validates data, detects duplicates, and creates or updates CRM pipeline records with full notifications and logging.",
-  why: "To ensure every inbound lead is processed correctly, prevent duplicates, maintain clean CRM data, and alert the team in real time when leads are created or updated.",
-  tools: "Make.com, Webhooks, Airtable, ClickUp, Slack, Gmail",
-  flow: [
-    "Receive lead data via webhook",
-    "Validate and clean incoming lead fields",
-    "Search CRM to check if lead already exists",
-    "Route logic to create a new lead or update an existing record",
-    "Update CRM pipeline stage",
-    "Create a task in ClickUp for follow-up",
-    "Notify team via Slack and email",
-    "Log errors and system status for auditing"
-  ]
-},
-make2: {
-  title: "Automated Order Processing with Validation & Error Handling",
-  description: "Processes incoming orders, validates data, detects existing records, updates order status, manages backorders, and alerts stakeholders on success or failure.",
-  why: "To eliminate manual order handling, reduce errors, ensure accurate fulfillment tracking, and immediately surface issues before they impact customers.",
-  tools: "Make.com, Webhooks, Airtable, Slack, Gmail",
-  flow: [
-    "Receive order payload via webhook",
-    "Sanitize and normalize order data",
-    "Validate required fields and business rules",
-    "Search existing records to prevent duplicate orders",
-    "Route orders based on availability and status",
-    "Update order or create backorder records",
-    "Notify operators and stakeholders via Slack",
-    "Send email confirmations or error alerts",
-    "Log final status for reporting and audits"
-  ]
-},
-make3: {
-  title:"Automated Lead Intake, Validation & Routing System",
-  description: "I built a Make.com automation that ingests inbound events via webhooks, sanitizes and validates data, routes execution based on event type, fully processes the primary business path, stubs secondary paths for future expansion, and escalates downstream failures with structured error alerts. The system is designed for reliability, maintainability, and incremental scaling.",
-  why: "Makes logs clearer Helps if you later add monitoring Shows lifecycle thinking",
-  tools: "Make.com, Webhooks, Airtable, Slack, Gmail, HTTP Request",
-  flow: [
-    "Receive new lead via webhook",
-    "Sanitize and normalize order data",
-    "Seperate via type of sources",
-    "Set Processing Status",
-    "Building a processed payload",
-    "Send the lead intake to downstream using http"
-    ]
-}
-};
-
-function openProject(key) {
-  const p = projects[key];
-  document.getElementById("modalTitle").innerText = p.title;
-  document.getElementById("modalDescription").innerText = p.description;
-  document.getElementById("modalWhy").innerText = p.why;
-  document.getElementById("modalTools").innerText = p.tools;
-
-  const flowList = document.getElementById("modalFlow");
-  flowList.innerHTML = "";
-  p.flow.forEach(step => {
-    const li = document.createElement("li");
-    li.textContent = step;
-    flowList.appendChild(li);
-  });
-
-  document.getElementById("projectModal").style.display = "flex";
-}
-
-function closeModal() {
-  document.getElementById("projectModal").style.display = "none";
-}
-  function previewProject(key) {
-  const p = projects[key];
-  const preview = document.getElementById("projectPreview");
-
-  preview.innerHTML = `
-    <h4>${p.title}</h4>
-    <p>${p.description}</p>
-    <p><strong>Tools:</strong> ${p.tools}</p>
-  `;
-
-  preview.style.display = "block";
-}
-
-function closePreview() {
-  document.getElementById("projectPreview").style.display = "none";
-}
-
-document.addEventListener("mousemove", e => {
-  const preview = document.getElementById("projectPreview");
-  if (preview.style.display === "block") {
-    preview.style.left = e.clientX + 20 + "px";
-    preview.style.top = e.clientY + 20 + "px";
-  }
-});
-
-</script>
-
-  <!-- Calendly inline script (commented: enable when you add your calendly URL) -->
-  <!--
-  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
-  <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
-  <script>Calendly.initInlineWidget({url:'https://calendly.com/your-calendly-username/30min',parentElement:document.getElementById('calendly-embed'),prefill:{},utm:{}})</script>
-  -->
-
 </body>
 </html>
